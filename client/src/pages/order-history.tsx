@@ -1,19 +1,36 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Package, Tractor, Clock, PackageCheck, PackageX, Truck, ArrowRight } from "lucide-react";
+import { Package, Tractor, Clock, PackageCheck, PackageX, Truck, ArrowRight, Trash2, AlertCircle } from "lucide-react";
 import { Link } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 // Default user ID for demo purposes
 const DEFAULT_USER_ID = 1;
 
 const OrderHistory = () => {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("orders");
+  const [deleteOrderId, setDeleteOrderId] = useState<number | null>(null);
+  const [deleteRentalId, setDeleteRentalId] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Fetch user's orders
   const { data: orders = [], isLoading: isLoadingOrders, refetch: refetchOrders } = useQuery<any[]>({
@@ -34,6 +51,82 @@ const OrderHistory = () => {
   useEffect(() => {
     refetchRentals();
   }, [refetchRentals]);
+
+  // Delete an order
+  const handleDeleteOrder = async () => {
+    if (!deleteOrderId) return;
+    
+    try {
+      setIsDeleting(true);
+      const response = await fetch(`/api/orders/${deleteOrderId}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete order');
+      }
+      
+      // Reset the delete id
+      setDeleteOrderId(null);
+      
+      // Invalidate and refetch orders
+      await queryClient.invalidateQueries({ queryKey: [`/api/orders/user/${DEFAULT_USER_ID}`] });
+      
+      toast({
+        title: "Order Deleted",
+        description: "Order has been deleted successfully.",
+        duration: 5000,
+      });
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete order. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Delete a rental request
+  const handleDeleteRental = async () => {
+    if (!deleteRentalId) return;
+    
+    try {
+      setIsDeleting(true);
+      const response = await fetch(`/api/rental-requests/${deleteRentalId}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete rental request');
+      }
+      
+      // Reset the delete id
+      setDeleteRentalId(null);
+      
+      // Invalidate and refetch rental requests
+      await queryClient.invalidateQueries({ queryKey: [`/api/rental-requests/user/${DEFAULT_USER_ID}`] });
+      
+      toast({
+        title: "Rental Request Deleted",
+        description: "Rental request has been deleted successfully.",
+        duration: 5000,
+      });
+    } catch (error) {
+      console.error('Error deleting rental request:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete rental request. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
@@ -178,7 +271,39 @@ const OrderHistory = () => {
                             </div>
                           </div>
                           
-                          <div className="mt-4 flex justify-end">
+                          <div className="mt-4 flex justify-between items-center">
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button 
+                                  variant="outline" 
+                                  className="text-destructive border-destructive/30 hover:bg-destructive/10"
+                                  onClick={() => setDeleteOrderId(order.id)}
+                                >
+                                  <Trash2 className="h-4 w-4 mr-1" /> Delete
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This will permanently delete this order and cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel onClick={() => setDeleteOrderId(null)} disabled={isDeleting}>
+                                    Cancel
+                                  </AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={handleDeleteOrder} 
+                                    disabled={isDeleting}
+                                    className="bg-destructive hover:bg-destructive/90"
+                                  >
+                                    {isDeleting ? 'Deleting...' : 'Delete'}
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                            
                             <Link href={`/order-confirmation/${order.id}`}>
                               <Button variant="link" className="text-primary">
                                 View Details <ArrowRight className="ml-1 h-4 w-4" />
@@ -282,6 +407,40 @@ const OrderHistory = () => {
                               Our team will contact you shortly to discuss your request.
                             </div>
                           )}
+                          
+                          <div className="mt-4 flex justify-end">
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button 
+                                  variant="outline" 
+                                  className="text-destructive border-destructive/30 hover:bg-destructive/10"
+                                  onClick={() => setDeleteRentalId(request.id)}
+                                >
+                                  <Trash2 className="h-4 w-4 mr-1" /> Delete Request
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This will permanently delete this rental request and cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel onClick={() => setDeleteRentalId(null)} disabled={isDeleting}>
+                                    Cancel
+                                  </AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={handleDeleteRental} 
+                                    disabled={isDeleting}
+                                    className="bg-destructive hover:bg-destructive/90"
+                                  >
+                                    {isDeleting ? 'Deleting...' : 'Delete'}
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
                         </CardContent>
                       </Card>
                     ))
