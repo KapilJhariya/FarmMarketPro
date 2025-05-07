@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Phone, ClipboardCheck, ArrowLeft } from "lucide-react";
+import { Calendar, Phone, ClipboardCheck, ArrowLeft, LogIn } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
 
 interface RentalRequest {
   id: number;
@@ -23,14 +24,39 @@ interface RentalRequest {
 export default function RentalHistory() {
   const [isLoading, setIsLoading] = useState(true);
   const [rentalRequests, setRentalRequests] = useState<RentalRequest[]>([]);
+  const { user } = useAuth();
+  const [, navigate] = useLocation();
+
+  // If user is not logged in, redirect to auth page
+  if (!user) {
+    return (
+      <div className="py-12 bg-gray-50 min-h-screen">
+        <div className="container mx-auto px-4">
+          <div className="max-w-md mx-auto text-center py-12 bg-white rounded-lg shadow">
+            <LogIn className="h-12 w-12 mx-auto text-primary mb-4" />
+            <h1 className="text-2xl font-bold mb-2">Sign In Required</h1>
+            <p className="text-gray-600 mb-6">
+              Please sign in to view your rental history.
+            </p>
+            <Button 
+              className="bg-primary hover:bg-primary/90" 
+              onClick={() => navigate("/auth")}
+            >
+              Sign In
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     const fetchRentalRequests = async () => {
+      if (!user) return;
+      
       setIsLoading(true);
       try {
-        // In a real application, we would get the user ID from authentication context
-        const userId = 1; // Using the test user ID
-        const response = await fetch(`/api/rental-requests/user/${userId}`);
+        const response = await fetch(`/api/rental-requests/user/${user.id}`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch rental requests');
@@ -46,7 +72,7 @@ export default function RentalHistory() {
     };
     
     fetchRentalRequests();
-  }, []);
+  }, [user]);
 
   return (
     <div className="container mx-auto px-4 py-8">

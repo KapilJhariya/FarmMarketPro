@@ -6,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Package, Tractor, Clock, PackageCheck, PackageX, Truck, ArrowRight, Trash2, AlertCircle } from "lucide-react";
-import { Link } from "wouter";
+import { Package, Tractor, Clock, PackageCheck, PackageX, Truck, ArrowRight, Trash2, AlertCircle, LogIn } from "lucide-react";
+import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -21,9 +22,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-// Default user ID for demo purposes
-const DEFAULT_USER_ID = 1;
-
 const OrderHistory = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -31,26 +29,55 @@ const OrderHistory = () => {
   const [deleteOrderId, setDeleteOrderId] = useState<number | null>(null);
   const [deleteRentalId, setDeleteRentalId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { user } = useAuth();
+  const [, navigate] = useLocation();
+
+  // If user is not logged in, show login message
+  if (!user) {
+    return (
+      <div className="py-12 bg-gray-50 min-h-screen">
+        <div className="container mx-auto px-4">
+          <div className="max-w-md mx-auto text-center py-12 bg-white rounded-lg shadow">
+            <LogIn className="h-12 w-12 mx-auto text-primary mb-4" />
+            <h1 className="text-2xl font-bold mb-2">Sign In Required</h1>
+            <p className="text-gray-600 mb-6">
+              Please sign in to view your orders and rental history.
+            </p>
+            <Button 
+              className="bg-primary hover:bg-primary/90" 
+              onClick={() => navigate("/auth")}
+            >
+              Sign In
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Fetch user's orders
   const { data: orders = [], isLoading: isLoadingOrders, refetch: refetchOrders } = useQuery<any[]>({
-    queryKey: [`/api/orders/user/${DEFAULT_USER_ID}`],
+    queryKey: [`/api/orders/user/${user.id}`],
   });
   
-  // Refresh orders when component mounts
+  // Refresh orders when component mounts or user changes
   useEffect(() => {
-    refetchOrders();
-  }, [refetchOrders]);
+    if (user) {
+      refetchOrders();
+    }
+  }, [refetchOrders, user]);
 
   // Fetch user's rental requests
   const { data: rentalRequests = [], isLoading: isLoadingRentals, refetch: refetchRentals } = useQuery<any[]>({
-    queryKey: [`/api/rental-requests/user/${DEFAULT_USER_ID}`],
+    queryKey: [`/api/rental-requests/user/${user.id}`],
   });
   
-  // Refresh rental requests when component mounts
+  // Refresh rental requests when component mounts or user changes
   useEffect(() => {
-    refetchRentals();
-  }, [refetchRentals]);
+    if (user) {
+      refetchRentals();
+    }
+  }, [refetchRentals, user]);
 
   // Delete an order
   const handleDeleteOrder = async () => {
@@ -70,7 +97,7 @@ const OrderHistory = () => {
       setDeleteOrderId(null);
       
       // Invalidate and refetch orders
-      await queryClient.invalidateQueries({ queryKey: [`/api/orders/user/${DEFAULT_USER_ID}`] });
+      await queryClient.invalidateQueries({ queryKey: [`/api/orders/user/${user.id}`] });
       
       toast({
         title: "Order Deleted",
@@ -108,7 +135,7 @@ const OrderHistory = () => {
       setDeleteRentalId(null);
       
       // Invalidate and refetch rental requests
-      await queryClient.invalidateQueries({ queryKey: [`/api/rental-requests/user/${DEFAULT_USER_ID}`] });
+      await queryClient.invalidateQueries({ queryKey: [`/api/rental-requests/user/${user.id}`] });
       
       toast({
         title: "Rental Request Deleted",
