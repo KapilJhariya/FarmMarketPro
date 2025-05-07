@@ -1,6 +1,11 @@
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
+// Import jspdf-autotable
 import 'jspdf-autotable';
 import { formatCurrency } from './utils';
+
+// This ensures TypeScript knows about the autoTable method
+// @ts-ignore
+import autoTable from 'jspdf-autotable';
 
 // Extend jsPDF with autotable plugin
 interface jsPDFWithAutoTable extends jsPDF {

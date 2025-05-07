@@ -26,9 +26,14 @@ const OrderHistory = () => {
   }, [refetchOrders]);
 
   // Fetch user's rental requests
-  const { data: rentalRequests = [], isLoading: isLoadingRentals } = useQuery<any[]>({
+  const { data: rentalRequests = [], isLoading: isLoadingRentals, refetch: refetchRentals } = useQuery<any[]>({
     queryKey: [`/api/rental-requests/user/${DEFAULT_USER_ID}`],
   });
+  
+  // Refresh rental requests when component mounts
+  useEffect(() => {
+    refetchRentals();
+  }, [refetchRentals]);
 
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
@@ -248,6 +253,18 @@ const OrderHistory = () => {
                                 <p className="text-sm text-gray-600">{request.duration}</p>
                               </div>
                             </div>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                              <div>
+                                <p className="text-sm font-medium">Contractor Number:</p>
+                                <p className="text-sm text-gray-600 font-mono font-medium">{request.contractorNumber}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium">Estimated Wait:</p>
+                                <p className="text-sm text-gray-600">{request.estimatedWaitTime}</p>
+                              </div>
+                            </div>
+                            
                             <div>
                               <p className="text-sm font-medium">Description:</p>
                               <p className="text-sm text-gray-600">{request.description}</p>
