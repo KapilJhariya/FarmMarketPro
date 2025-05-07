@@ -10,8 +10,12 @@ import {
   insertCartItemSchema
 } from "@shared/schema";
 import { nanoid } from "nanoid";
+import { setupAuth } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Set up authentication
+  setupAuth(app);
+  
   // prefix all routes with /api
   
   // Crop Routes
