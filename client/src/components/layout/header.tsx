@@ -43,9 +43,9 @@ const Header = () => {
                 Equipment Rentals
               </a>
             </Link>
-            <Link href="/rentals/history">
-              <a className={`py-2 px-1 font-medium hover:underline ${location === '/rentals/history' ? 'underline' : ''}`}>
-                Rental History
+            <Link href="/order-history">
+              <a className={`py-2 px-1 font-medium hover:underline ${location === '/order-history' ? 'underline' : ''}`}>
+                My Account
               </a>
             </Link>
           </nav>
