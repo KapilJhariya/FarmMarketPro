@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { Loader2, CheckCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ReceiptTemplate from "@/components/receipts/receipt-template";
+import PdfReceipt from "@/components/receipts/pdf-receipt";
 
 const OrderConfirmation = () => {
   const { orderId } = useParams();
@@ -71,7 +71,8 @@ const OrderConfirmation = () => {
             </div>
             
             <div className="max-w-3xl mx-auto">
-              <ReceiptTemplate order={order} products={products} />
+              {/* Enhanced receipt component with PDF download functionality */}
+              <PdfReceipt order={order} products={products} />
               
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link href="/marketplace">
