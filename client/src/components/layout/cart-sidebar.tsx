@@ -45,7 +45,8 @@ const CartSidebar = () => {
         productId: item.productId,
         quantity: item.quantity,
         price: item.price,
-        subtotal: item.subtotal
+        subtotal: item.subtotal,
+        name: item.name // Add name to ensure it's available in the receipt
       }))
     };
     
@@ -54,9 +55,12 @@ const CartSidebar = () => {
       id: item.productId,
       name: item.name,
       price: item.price,
-      unit: item.unit || 'Item',
+      unit: item.unit || 'Each',
       imageUrl: item.imageUrl || ''
     }));
+    
+    console.log("Order data:", mockOrder);
+    console.log("Products data:", products);
     
     return { mockOrder, products };
   };

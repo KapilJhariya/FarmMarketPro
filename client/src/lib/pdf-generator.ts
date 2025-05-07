@@ -79,17 +79,26 @@ export const generateOrderReceipt = (order: OrderData, products: any[]): jsPDF =
   
   // Get product names for each item
   const enhancedItems = order.items.map(item => {
+    // Check if name is provided in the item
+    if (item.name) {
+      return {
+        ...item,
+        displayName: `${item.name} (${products.find(p => p.id === item.productId)?.unit || 'Each'})`
+      };
+    }
+    
+    // Fallback to finding product in products array
     const product = products.find(p => p.id === item.productId);
     return {
       ...item,
-      name: product ? `${product.name} (${product.unit})` : `Product #${item.productId}`
+      displayName: product ? `${product.name} (${product.unit})` : `Product #${item.productId}`
     };
   });
   
   // Create table data
   const tableColumn = ["Product", "Quantity", "Price", "Total"];
   const tableRows = enhancedItems.map(item => [
-    item.name || `Product #${item.productId}`,
+    item.displayName || item.name || `Product #${item.productId}`,
     item.quantity.toString(),
     formatCurrency(item.price),
     formatCurrency(item.subtotal)
