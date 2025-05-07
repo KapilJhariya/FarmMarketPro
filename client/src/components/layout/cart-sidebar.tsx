@@ -1,15 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { X, ShoppingCart } from "lucide-react";
+import { X, ShoppingCart, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cart-context";
 import CartItem from "@/components/cart/cart-item";
 import { Loader2 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { downloadOrderReceipt } from "@/lib/pdf-generator";
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 const CartSidebar = () => {
   const { cart, isLoading, isCartOpen, closeCart } = useCart();
   const [, navigate] = useLocation();
+  const [showReceiptDialog, setShowReceiptDialog] = useState(false);
+  const [processingOrder, setProcessingOrder] = useState(false);
 
   // Prevent body scrolling when cart is open
   useEffect(() => {
@@ -24,53 +28,58 @@ const CartSidebar = () => {
     };
   }, [isCartOpen]);
 
+  // Function to generate a mock receipt from the cart
+  const generateReceiptFromCart = () => {
+    // Create a mock order from the cart data
+    const mockOrder = {
+      id: 1,
+      orderNumber: `AG${Date.now().toString().slice(-5)}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+      orderDate: new Date().toISOString(),
+      subtotal: cart.subtotal,
+      shippingCost: cart.shippingCost,
+      total: cart.total,
+      status: "Processing",
+      shippingAddress: "123 Farm Road, Farmington, IL 61234",
+      paymentMethod: "Credit Card ending in 4242",
+      items: cart.items.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+        subtotal: item.subtotal
+      }))
+    };
+    
+    // Create a products array with the cart items
+    const products = cart.items.map(item => ({
+      id: item.productId,
+      name: item.name,
+      price: item.price,
+      unit: item.unit || 'Item',
+      imageUrl: item.imageUrl || ''
+    }));
+    
+    return { mockOrder, products };
+  };
+  
+  // Function to download the receipt
+  const downloadReceipt = () => {
+    setProcessingOrder(true);
+    
+    try {
+      const { mockOrder, products } = generateReceiptFromCart();
+      downloadOrderReceipt(mockOrder, products);
+      setProcessingOrder(false);
+      setShowReceiptDialog(false);
+    } catch (error) {
+      console.error("Receipt generation error:", error);
+      setProcessingOrder(false);
+    }
+  };
+
+  // Original checkout function - now shows the receipt dialog instead
   const handleCheckout = async () => {
     try {
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: 1, // Default user for demo
-          subtotal: cart.subtotal,
-          shippingCost: cart.shippingCost,
-          total: cart.total,
-          status: "Pending",
-          shippingAddress: "123 Farm Road, Agriville, AG 54321",
-          paymentMethod: "Credit Card",
-        }),
-      });
-
-      if (!response.ok) throw new Error("Failed to create order");
-      const order = await response.json();
-
-      // Add each cart item to the order
-      await Promise.all(
-        cart.items.map(async (item) => {
-          await fetch(`/api/orders/${order.id}/items`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              productId: item.productId,
-              quantity: item.quantity,
-              price: item.price,
-              subtotal: item.subtotal,
-            }),
-          });
-        })
-      );
-
-      // Clear the cart
-      await fetch(`/api/cart/user/1`, {
-        method: "DELETE",
-      });
-
-      // Navigate to confirmation page
-      closeCart();
-      navigate(`/order-confirmation/${order.id}`);
+      setShowReceiptDialog(true);
     } catch (error) {
       console.error("Checkout error:", error);
     }
@@ -80,6 +89,42 @@ const CartSidebar = () => {
 
   return (
     <>
+      {/* Receipt Dialog */}
+      <Dialog open={showReceiptDialog} onOpenChange={setShowReceiptDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Complete Your Order</DialogTitle>
+            <DialogDescription>
+              Your order is ready to be processed. Would you like to generate a receipt for your records?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="border rounded-md p-4 bg-gray-50">
+              <p className="text-sm font-medium">Order Summary</p>
+              <p className="text-sm text-gray-500">Total Items: {cart.items.length}</p>
+              <p className="text-sm text-gray-500">Total Amount: {formatCurrency(cart.total)}</p>
+            </div>
+          </div>
+          <DialogFooter className="flex-col sm:flex-row sm:justify-between gap-2">
+            <Button variant="outline" onClick={() => setShowReceiptDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              className="bg-primary hover:bg-primary/90"
+              onClick={downloadReceipt}
+              disabled={processingOrder}
+            >
+              {processingOrder ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4 mr-2" />
+              )}
+              Generate Receipt
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Overlay */}
       <div 
         className="fixed inset-0 bg-black bg-opacity-50 z-40"
