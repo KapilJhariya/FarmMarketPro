@@ -5,18 +5,39 @@ import { Loader2, CheckCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PdfReceipt from "@/components/receipts/pdf-receipt";
 
+// Define the types for our order data
+interface OrderItem {
+  productId: number;
+  quantity: number;
+  price: number;
+  subtotal: number;
+}
+
+interface OrderData {
+  id: number;
+  orderNumber: string;
+  orderDate: string;
+  subtotal: number;
+  shippingCost: number;
+  total: number;
+  status: string;
+  shippingAddress: string;
+  paymentMethod: string;
+  items: OrderItem[];
+}
+
 const OrderConfirmation = () => {
   const { orderId } = useParams();
-  const orderIdNum = parseInt(orderId);
+  const orderIdNum = orderId ? parseInt(orderId) : NaN;
 
   // Fetch order details
-  const { data: order, isLoading: isLoadingOrder, error } = useQuery({
+  const { data: order, isLoading: isLoadingOrder, error } = useQuery<OrderData>({
     queryKey: [`/api/orders/${orderIdNum}`],
     enabled: !isNaN(orderIdNum),
   });
 
   // Fetch product details to display product names
-  const { data: products, isLoading: isLoadingProducts } = useQuery({
+  const { data: products, isLoading: isLoadingProducts } = useQuery<any[]>({
     queryKey: ["/api/products"],
   });
 
@@ -66,13 +87,19 @@ const OrderConfirmation = () => {
               </div>
               <h1 className="text-3xl font-bold font-roboto mb-2">Order Confirmation</h1>
               <p className="text-gray-600">
-                Thank you for your order! Your order #{order.orderNumber} has been received.
+                Thank you for your order! Your order #{order?.orderNumber} has been received.
               </p>
             </div>
             
             <div className="max-w-3xl mx-auto">
               {/* Enhanced receipt component with PDF download functionality */}
-              <PdfReceipt order={order} products={products} />
+              {order && products ? (
+                <PdfReceipt order={order} products={products} />
+              ) : (
+                <div className="bg-white p-6 rounded-lg shadow-sm text-center">
+                  <p className="text-gray-500">Receipt data is loading...</p>
+                </div>
+              )}
               
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link href="/marketplace">
