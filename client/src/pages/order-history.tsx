@@ -150,7 +150,7 @@ const OrderHistory = () => {
                             </div>
                             <div className="text-right">
                               <p className="font-semibold">{formatCurrency(order.total)}</p>
-                              <p className="text-sm text-gray-500">{order.items.length} items</p>
+                              <p className="text-sm text-gray-500">Order Total</p>
                             </div>
                           </div>
                           

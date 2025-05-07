@@ -178,12 +178,14 @@ const CartSidebar = () => {
                     // Clear the cart
                     await clearCart();
                     
-                    // Show success toast
-                    toast({
-                      title: "Order Placed Successfully",
-                      description: "Your order has been placed and will be processed shortly.",
-                      variant: "default",
-                    });
+                    // Show success toast - wrapped in setTimeout to avoid React rendering issues
+                    setTimeout(() => {
+                      toast({
+                        title: "Order Placed Successfully",
+                        description: "Your order has been placed and will be processed shortly.",
+                        variant: "default",
+                      });
+                    }, 100);
                     
                     // Close dialog and navigate to order history
                     setShowReceiptDialog(false);
@@ -191,11 +193,14 @@ const CartSidebar = () => {
                     navigate("/order-history");
                   } catch (error) {
                     console.error("Error placing order:", error);
-                    toast({
-                      title: "Error",
-                      description: "There was a problem creating your order. Please try again.",
-                      variant: "destructive",
-                    });
+                    // Delay toast to avoid React rendering issues
+                    setTimeout(() => {
+                      toast({
+                        title: "Error",
+                        description: "There was a problem creating your order. Please try again.",
+                        variant: "destructive",
+                      });
+                    }, 100);
                   } finally {
                     setProcessingOrder(false);
                   }
