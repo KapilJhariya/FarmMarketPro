@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Download, ClipboardCheck, Phone } from "lucide-react";
+import { Loader2, Download, ClipboardCheck, Phone, LogIn } from "lucide-react";
 import { useLocation } from "wouter";
 import { 
   Dialog, 
@@ -67,10 +68,12 @@ interface TicketData {
 
 const RentalRequestForm = ({ selectedEquipment, selectedLabor }: RentalRequestFormProps) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [, navigate] = useLocation();
   const [showTicketDialog, setShowTicketDialog] = useState(false);
   const [ticketData, setTicketData] = useState<TicketData | null>(null);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
 
   // Set default request type based on selections
   let defaultRequestType = "Both";
@@ -129,10 +132,16 @@ const RentalRequestForm = ({ selectedEquipment, selectedLabor }: RentalRequestFo
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    // Check if user is authenticated
+    if (!user) {
+      setShowAuthDialog(true);
+      return;
+    }
+    
     setIsSubmitting(true);
     try {
-      // For demonstration, using a static user ID
-      const userId = 1;
+      // Use the authenticated user's ID
+      const userId = user.id;
       
       // Generate a ticket number
       const ticketNumber = `AGR-${Date.now().toString().slice(-6)}`;
@@ -211,6 +220,41 @@ const RentalRequestForm = ({ selectedEquipment, selectedLabor }: RentalRequestFo
 
   return (
     <>
+      {/* Authentication Dialog */}
+      <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-xl">Sign In Required</DialogTitle>
+            <DialogDescription className="text-center">
+              You need to be signed in to submit a rental request.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex justify-center py-4">
+            <LogIn className="h-12 w-12 text-primary" />
+          </div>
+          
+          <p className="text-center mb-6">
+            Please sign in to continue with your request. Your form data will be preserved.
+          </p>
+          
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowAuthDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="bg-primary hover:bg-primary/90"
+              onClick={() => navigate("/auth")}
+            >
+              Sign In
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    
       {/* Ticket Dialog */}
       <Dialog open={showTicketDialog} onOpenChange={setShowTicketDialog}>
         <DialogContent className="sm:max-w-md">
