@@ -1,7 +1,14 @@
-import {
-  Crop, Equipment, InsertCrop, InsertEquipment, InsertMarket, InsertOrder, InsertOrderItem,
-  InsertProduct, InsertProductCategory, InsertRentalBooking, InsertUser, Market, Order,
-  OrderItem, OrderWithItems, Product, ProductCategory, RentalBooking, User
+import { 
+  users, type User, type InsertUser,
+  crops, type Crop, type InsertCrop,
+  products, type Product, type InsertProduct,
+  orders, type Order, type InsertOrder,
+  orderItems, type OrderItem, type InsertOrderItem,
+  equipment, type Equipment, type InsertEquipment,
+  labor, type Labor, type InsertLabor,
+  rentalRequests, type RentalRequest, type InsertRentalRequest,
+  priceAlerts, type PriceAlert, type InsertPriceAlert,
+  cartItems, type CartItem, type InsertCartItem
 } from "@shared/schema";
 
 // Interface for all storage operations
@@ -12,294 +19,314 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
 
   // Crop operations
-  getCrops(): Promise<Crop[]>;
-  getCropsByMarket(marketId: number): Promise<Crop[]>;
+  getAllCrops(): Promise<Crop[]>;
   getCrop(id: number): Promise<Crop | undefined>;
-  createCrop(crop: InsertCrop): Promise<Crop>;
-  updateCrop(id: number, crop: Partial<InsertCrop>): Promise<Crop | undefined>;
-
-  // Market operations
-  getMarkets(): Promise<Market[]>;
-  getMarket(id: number): Promise<Market | undefined>;
-  createMarket(market: InsertMarket): Promise<Market>;
-
-  // Product Category operations
-  getProductCategories(): Promise<ProductCategory[]>;
-  getProductCategory(id: number): Promise<ProductCategory | undefined>;
-  createProductCategory(category: InsertProductCategory): Promise<ProductCategory>;
-
+  updateCrop(crop: Crop): Promise<Crop>;
+  
   // Product operations
-  getProducts(): Promise<Product[]>;
-  getProductsByCategory(categoryId: number): Promise<Product[]>;
+  getAllProducts(): Promise<Product[]>;
+  getProductsByCategory(category: string): Promise<Product[]>;
   getProduct(id: number): Promise<Product | undefined>;
-  createProduct(product: InsertProduct): Promise<Product>;
-  updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined>;
-  updateProductStock(id: number, quantity: number): Promise<Product | undefined>;
-
-  // Equipment operations
-  getEquipment(): Promise<Equipment[]>;
-  getEquipmentByDistance(maxDistance: number): Promise<Equipment[]>;
-  getEquipmentItem(id: number): Promise<Equipment | undefined>;
-  createEquipment(equipment: InsertEquipment): Promise<Equipment>;
-  updateEquipment(id: number, equipment: Partial<InsertEquipment>): Promise<Equipment | undefined>;
-
+  
   // Order operations
-  getOrders(userId: number): Promise<Order[]>;
-  getOrder(id: number): Promise<OrderWithItems | undefined>;
   createOrder(order: InsertOrder): Promise<Order>;
-  createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem>;
+  getOrdersByUser(userId: number): Promise<Order[]>;
+  getOrder(id: number): Promise<Order | undefined>;
+  getOrderByNumber(orderNumber: string): Promise<Order | undefined>;
+  
+  // Order Item operations
+  addOrderItem(orderItem: InsertOrderItem): Promise<OrderItem>;
   getOrderItems(orderId: number): Promise<OrderItem[]>;
-  updateOrderStatus(id: number, status: string): Promise<Order | undefined>;
-
-  // Rental booking operations
-  getRentalBookings(userId: number): Promise<RentalBooking[]>;
-  getRentalBooking(id: number): Promise<RentalBooking | undefined>;
-  createRentalBooking(booking: InsertRentalBooking): Promise<RentalBooking>;
-  updateRentalBookingStatus(id: number, status: string): Promise<RentalBooking | undefined>;
+  
+  // Equipment operations
+  getAllEquipment(): Promise<Equipment[]>;
+  getEquipment(id: number): Promise<Equipment | undefined>;
+  
+  // Labor operations
+  getAllLabor(): Promise<Labor[]>;
+  getLabor(id: number): Promise<Labor | undefined>;
+  
+  // Rental Request operations
+  createRentalRequest(request: InsertRentalRequest): Promise<RentalRequest>;
+  getRentalRequestsByUser(userId: number): Promise<RentalRequest[]>;
+  
+  // Price Alert operations
+  createPriceAlert(alert: InsertPriceAlert): Promise<PriceAlert>;
+  getPriceAlertsByUser(userId: number): Promise<PriceAlert[]>;
+  
+  // Cart operations
+  getCartItems(userId: number): Promise<{ cartItem: CartItem; product: Product }[]>;
+  addToCart(cartItem: InsertCartItem): Promise<CartItem>;
+  updateCartItem(id: number, quantity: number): Promise<CartItem | undefined>;
+  removeFromCart(id: number): Promise<boolean>;
+  clearCart(userId: number): Promise<boolean>;
 }
 
-// Memory-based storage implementation
+// Memory Storage implementation
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private crops: Map<number, Crop>;
-  private markets: Map<number, Market>;
-  private productCategories: Map<number, ProductCategory>;
   private products: Map<number, Product>;
-  private equipment: Map<number, Equipment>;
   private orders: Map<number, Order>;
   private orderItems: Map<number, OrderItem>;
-  private rentalBookings: Map<number, RentalBooking>;
+  private equipment: Map<number, Equipment>;
+  private labor: Map<number, Labor>;
+  private rentalRequests: Map<number, RentalRequest>;
+  private priceAlerts: Map<number, PriceAlert>;
+  private cartItems: Map<number, CartItem>;
 
-  // Current IDs for auto-increment
+  // ID counters for each entity
   private currentUserId: number;
   private currentCropId: number;
-  private currentMarketId: number;
-  private currentProductCategoryId: number;
   private currentProductId: number;
-  private currentEquipmentId: number;
   private currentOrderId: number;
   private currentOrderItemId: number;
-  private currentRentalBookingId: number;
+  private currentEquipmentId: number;
+  private currentLaborId: number;
+  private currentRentalRequestId: number;
+  private currentPriceAlertId: number;
+  private currentCartItemId: number;
 
   constructor() {
     this.users = new Map();
     this.crops = new Map();
-    this.markets = new Map();
-    this.productCategories = new Map();
     this.products = new Map();
-    this.equipment = new Map();
     this.orders = new Map();
     this.orderItems = new Map();
-    this.rentalBookings = new Map();
+    this.equipment = new Map();
+    this.labor = new Map();
+    this.rentalRequests = new Map();
+    this.priceAlerts = new Map();
+    this.cartItems = new Map();
 
     this.currentUserId = 1;
     this.currentCropId = 1;
-    this.currentMarketId = 1;
-    this.currentProductCategoryId = 1;
     this.currentProductId = 1;
-    this.currentEquipmentId = 1;
     this.currentOrderId = 1;
     this.currentOrderItemId = 1;
-    this.currentRentalBookingId = 1;
+    this.currentEquipmentId = 1;
+    this.currentLaborId = 1;
+    this.currentRentalRequestId = 1;
+    this.currentPriceAlertId = 1;
+    this.currentCartItemId = 1;
 
-    // Initialize with some data
-    this.initializeData();
+    // Initialize with sample data
+    this.initSampleData();
   }
 
-  // Initialize with sample data
-  private initializeData() {
-    // Add markets
-    const nationalMarket = this.createMarket({ name: "National Average" });
-    const midwestMarket = this.createMarket({ name: "Midwest Region" });
-    const easternMarket = this.createMarket({ name: "Eastern Market" });
-    const westernMarket = this.createMarket({ name: "Western Market" });
+  // Initialize sample data for demonstration
+  private initSampleData() {
+    // Sample crops
+    const sampleCrops: InsertCrop[] = [
+      {
+        name: "Wheat",
+        variety: "Common",
+        currentPrice: 320.45,
+        previousPrice: 308.15,
+        change: 12.30,
+        percentChange: 3.8,
+        trend: "up",
+        imageUrl: "https://pixabay.com/get/gd624dd32f1da5fea4cd11e809bfc2ca6df3e07a91d9615e42e6a4b45c9292c54c5339bef94658687f4afbc0cc6fe30932fc5555c8c5df656e1d68580ced90ebb_1280.jpg",
+        priceHistory: [290, 295, 300, 305, 308.15, 320.45]
+      },
+      {
+        name: "Corn",
+        variety: "Yellow",
+        currentPrice: 185.20,
+        previousPrice: 190.85,
+        change: -5.65,
+        percentChange: -2.9,
+        trend: "down",
+        imageUrl: "https://images.unsplash.com/photo-1534313218094-b30d7888478c?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&h=50",
+        priceHistory: [195, 193, 192, 191, 190.85, 185.20]
+      },
+      {
+        name: "Soybeans",
+        variety: "Standard",
+        currentPrice: 425.70,
+        previousPrice: 416.80,
+        change: 8.90,
+        percentChange: 2.1,
+        trend: "up",
+        imageUrl: "https://pixabay.com/get/g36a9fd44ef1035d0efa51c912c3e774b089fc572c97b2e0ba3db2a46ee375e180bb32ec8004315c254aadefb2151f5e1e154923bc0a7dc550b16bef6af0c01ec_1280.jpg",
+        priceHistory: [400, 405, 410, 415, 416.80, 425.70]
+      },
+      {
+        name: "Rice",
+        variety: "Long Grain",
+        currentPrice: 560.30,
+        previousPrice: 545.10,
+        change: 15.20,
+        percentChange: 2.8,
+        trend: "up",
+        imageUrl: "https://pixabay.com/get/gd3f1914c6ab2b7bfc21dc6657b803bd0b50d9768acfb44f94f235dd328dab2f87bb079eac58dd8b7ce6adb3976d2cd2c7dffaa89cadf255f5cbf678056ca2fde_1280.jpg",
+        priceHistory: [520, 530, 535, 540, 545.10, 560.30]
+      },
+      {
+        name: "Barley",
+        variety: "Feed",
+        currentPrice: 210.75,
+        previousPrice: 205.50,
+        change: 5.25,
+        percentChange: 2.5,
+        trend: "up",
+        imageUrl: "https://pixabay.com/get/g0a2e1f2dc24ca6afbfec3ab47c7a14c4c1d2f07e71a08a88abf0ec9b5b323e11ac4aa4097cc5f242faf59a2e5e11a6c8a55b08e5f7beaf41bfd79c55e1ac15b9_1280.jpg",
+        priceHistory: [190, 195, 200, 205, 205.50, 210.75]
+      },
+      {
+        name: "Cotton",
+        variety: "Upland",
+        currentPrice: 78.90,
+        previousPrice: 82.45,
+        change: -3.55,
+        percentChange: -4.3,
+        trend: "down",
+        imageUrl: "https://pixabay.com/get/g3afab27efa9d32a63d1c546ab2a301baa6f6b9dbc5df9cf4df5b89a0e42edb7e9eeee6ac56c5c9c0775e4b8eb38d7cb80fcaeff74ea2ad0c9c18ad74d3a0ecc5_1280.jpg",
+        priceHistory: [85, 84, 83, 82.45, 80, 78.90]
+      }
+    ];
 
-    // Add crops
-    this.createCrop({
-      name: "Corn",
-      variety: "Yellow Dent",
-      currentPrice: 5.73,
-      previousPrice: 5.59,
-      imageUrl: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=80&h=80",
-      lastUpdated: new Date(),
-      marketId: nationalMarket.id
-    });
-    
-    this.createCrop({
-      name: "Wheat",
-      variety: "Hard Red",
-      currentPrice: 6.85,
-      previousPrice: 6.93,
-      imageUrl: "https://pixabay.com/get/ga18e37eafe731c049a4e3a9b08a383b683230463e00c348919e490b81ed431eee55fa0dd6aa6557e9bc4af47523846ed8d2920cf2d4e04d6427e998db4109b98_1280.jpg",
-      lastUpdated: new Date(),
-      marketId: nationalMarket.id
-    });
-    
-    this.createCrop({
-      name: "Soybeans",
-      variety: "Standard",
-      currentPrice: 13.45,
-      previousPrice: 12.97,
-      imageUrl: "https://pixabay.com/get/g9288d8ceef6503146a1437ecc2ef9eeb579796dca3454adc0adb2a7e4660d915dcf09a81994a1fe4cafab890ee284261_1280.jpg",
-      lastUpdated: new Date(),
-      marketId: nationalMarket.id
-    });
-    
-    this.createCrop({
-      name: "Rice",
-      variety: "Long Grain",
-      currentPrice: 14.22,
-      previousPrice: 14.11,
-      imageUrl: "https://pixabay.com/get/g0866e159699a193246497197df19cb7effe70eaaa80f9ce8456b7098bbf2969424510d7bc5ad7d47c477ff9f64b12724da7a8219ff6aaa58586aa3b958800212_1280.jpg",
-      lastUpdated: new Date(),
-      marketId: nationalMarket.id
-    });
-    
-    this.createCrop({
-      name: "Cotton",
-      variety: "Upland",
-      currentPrice: 0.73,
-      previousPrice: 0.75,
-      imageUrl: "https://pixabay.com/get/ga77bd6a9ace3ea5e41d562ebafcac83efc3a167187837ad4f44ab3f54636293635fd84a75c26bad31c9167626b7111c6585b06eb7d97943a16b4e447c6958c6d_1280.jpg",
-      lastUpdated: new Date(),
-      marketId: nationalMarket.id
-    });
-    
-    this.createCrop({
-      name: "Potatoes",
-      variety: "Russet",
-      currentPrice: 11.50,
-      previousPrice: 11.50,
-      imageUrl: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=80&h=80",
-      lastUpdated: new Date(),
-      marketId: nationalMarket.id
-    });
+    // Sample products
+    const sampleProducts: InsertProduct[] = [
+      {
+        name: "Premium Organic Fertilizer",
+        description: "High-quality organic fertilizer for all crops",
+        price: 45.99,
+        category: "Fertilizers",
+        imageUrl: "https://pixabay.com/get/g339f989526ef7457dcfe5b8989e59cacf082420bf04ec1ad124e4ff9c720abcc19d3efdba80cf118159838c212f56ece96dbeb27a0dce2985cf6b143d092f12e_1280.jpg",
+        unit: "50lb Bag",
+        inStock: true,
+        tags: ["Organic", "Premium"]
+      },
+      {
+        name: "Garden Tool Set",
+        description: "Complete set of garden tools for all your farming needs",
+        price: 89.95,
+        category: "Tools",
+        imageUrl: "https://images.unsplash.com/photo-1582131503261-fca1d1c0589f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+        unit: "5-Piece Set",
+        inStock: true,
+        tags: ["Best Seller", "Durable"]
+      },
+      {
+        name: "Heirloom Vegetable Seeds",
+        description: "Collection of heirloom vegetable seeds for diverse planting",
+        price: 24.50,
+        category: "Seeds",
+        imageUrl: "https://pixabay.com/get/g4dfcba4e620a948c283c0f5ecb12938a6dd258cc41f640f7e4faeb85479f30bccfb93072f9f97c5c1d0111751d12f0c081aeed2892d21acfcf8f69406bcb39f1_1280.jpg",
+        unit: "20 Variety Pack",
+        inStock: true,
+        tags: ["Non-GMO", "Heirloom"]
+      },
+      {
+        name: "Organic Pest Control",
+        description: "Natural pest control solution safe for organic farming",
+        price: 35.75,
+        category: "Pesticides",
+        imageUrl: "https://pixabay.com/get/ga2f1f794ea119827f3789c9ef07b1f4df764db10d4870364c6dbc39ad995cdc14964f17cb6e91691a2effb0657ccc8c9496280e8fee1e902d4f2783005cf1cee_1280.jpg",
+        unit: "32oz Concentrate",
+        inStock: true,
+        tags: ["Eco-Friendly", "Organic"]
+      },
+      {
+        name: "Heavy-Duty Garden Hose",
+        description: "Durable, kink-resistant garden hose for farm irrigation",
+        price: 67.99,
+        category: "Tools",
+        imageUrl: "https://pixabay.com/get/gacede183ce2aba93aec4e97fb5d3ace6fb33c62c0aa06e86d60b5e54cefd08be5a8db5fb78c055eb97afaf7f5e83b81b55f7f3c4c2eca6a89c2b7eb59aeec01a_1280.jpg",
+        unit: "100ft Length",
+        inStock: true,
+        tags: ["Durable", "Heavy-Duty"]
+      },
+      {
+        name: "Soil pH Testing Kit",
+        description: "Professional soil pH testing kit for optimal crop management",
+        price: 29.95,
+        category: "Tools",
+        imageUrl: "https://pixabay.com/get/ga8c7cc2cb17fdfeaa6fe7a83a5b5e5b9d65e0cc25baef9de2b6a2fa835b5b7d0b1b9a2ef4b16a2db7e4d05cad2e8a0fdfaa8e3c5f0aad1af84c4acd25f6c0c1e_1280.jpg",
+        unit: "Complete Kit",
+        inStock: true,
+        tags: ["Professional", "Essential"]
+      }
+    ];
 
-    // Add product categories
-    const fertilizers = this.createProductCategory({ name: "Fertilizers" });
-    const pesticides = this.createProductCategory({ name: "Pesticides" });
-    const seeds = this.createProductCategory({ name: "Seeds" });
-    const tools = this.createProductCategory({ name: "Tools" });
+    // Sample equipment
+    const sampleEquipment: InsertEquipment[] = [
+      {
+        name: "John Deere Tractor",
+        model: "6120M, 120 HP",
+        description: "Versatile tractor suitable for various farm operations",
+        imageUrl: "https://pixabay.com/get/g440f6ef9c6af140cb22b6042bb50438021f289b481dbca852577c74c4abb008b64c36a5c8ce4380ea9bd86d4cd88a6e8e60c04430fbba77f2fdfe2a1b12abded_1280.jpg",
+        availableUnits: 3,
+        dailyRate: 350,
+        weeklyRate: 1500,
+        category: "Tractor"
+      },
+      {
+        name: "Combine Harvester",
+        model: "Case IH 7150, 350 HP",
+        description: "High-performance combine harvester for efficient grain harvesting",
+        imageUrl: "https://images.unsplash.com/photo-1592982537447-7440770cbfc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
+        availableUnits: 1,
+        dailyRate: 750,
+        weeklyRate: 3200,
+        category: "Harvester"
+      },
+      {
+        name: "Seed Drill",
+        model: "Amazone D9-30",
+        description: "Precision seed drill for consistent seed placement",
+        imageUrl: "https://pixabay.com/get/g3a17f33b5afbd7ce6536de3fbca77f22307bb02097df3a14bba76adeb3bb3f38fd75e3607b80ec1f25c0b5b5d94e7664dc0f8da5d0a9ca7abe6f3ede3e9e5c8d_1280.jpg",
+        availableUnits: 2,
+        dailyRate: 250,
+        weeklyRate: 1200,
+        category: "Seeder"
+      },
+      {
+        name: "Irrigation System",
+        model: "Valley Center Pivot",
+        description: "Efficient irrigation system for large fields",
+        imageUrl: "https://pixabay.com/get/gd0e2c9f3a839e6f18d3b42f2bab10d79a0f4e3dc9b16cdcd9db0ddd0e28f0eb87b9c4b25c7095ba48cd35a0baf4a1efe84f453b11fe13e9c22654e90d21f8d44_1280.jpg",
+        availableUnits: 2,
+        dailyRate: 200,
+        weeklyRate: 1000,
+        category: "Irrigation"
+      }
+    ];
 
-    // Add products
-    this.createProduct({
-      name: "Premium NPK Fertilizer",
-      description: "Balanced nutrition for all crops. Promotes healthy growth and high yields.",
-      price: 49.99,
-      unit: "50 lb bag",
-      imageUrl: "https://images.unsplash.com/photo-1629904853893-c2c8981a1dc5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&h=300",
-      categoryId: fertilizers.id,
-      stock: 100,
-      tags: ["balanced", "nutrition", "growth"],
-      isBestSeller: true
-    });
+    // Sample labor
+    const sampleLabor: InsertLabor[] = [
+      {
+        title: "Seasonal Farm Workers",
+        description: "Team of 5-10 experienced workers for harvesting and planting",
+        imageUrl: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
+        hourlyRate: 15,
+        availability: "Immediate",
+        skills: ["Harvesting", "Planting", "General Farm Work"]
+      },
+      {
+        title: "Equipment Operator",
+        description: "Skilled operator for tractors, harvesters and other farm equipment",
+        imageUrl: "https://images.unsplash.com/photo-1540479859555-17af45c78602?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
+        hourlyRate: 25,
+        availability: "From 08/15",
+        skills: ["Tractor Operation", "Harvester Operation", "Equipment Maintenance"]
+      },
+      {
+        title: "Agricultural Technician",
+        description: "Experienced technician for equipment setup and maintenance",
+        imageUrl: "https://pixabay.com/get/g61ac3f90cc59d8d02f512a08a65f0fd40d9aa5e5db1d8ce45f6e75a46e99ac7af1b27f6f2bc9c1ebebf1ee4cf9ab76adb399e1ae1c18f12cb92c5a3f8cee9775_1280.jpg",
+        hourlyRate: 30,
+        availability: "Weekends Only",
+        skills: ["Equipment Repair", "Machinery Setup", "Technical Support"]
+      }
+    ];
 
-    this.createProduct({
-      name: "Organic Herbicide",
-      description: "Natural weed control solution. Safe for food crops and environmentally friendly.",
-      price: 32.50,
-      unit: "1 gallon",
-      imageUrl: "https://pixabay.com/get/gb0f1ea4fabd6c6de32e0c9aad7bc1b908c3a78cb2a63f437728ad5610bdbce46e7567aefd23f99592a395d146b81eb7d11890e53913e253d469e7e068b7fc0ee_1280.jpg",
-      categoryId: pesticides.id,
-      stock: 75,
-      tags: ["organic", "eco-friendly", "weed control"],
-      isBestSeller: false
-    });
-
-    this.createProduct({
-      name: "Hybrid Corn Seeds",
-      description: "Drought-resistant variety with excellent yield potential. Germination rate: 95%.",
-      price: 89.99,
-      unit: "80,000 seeds",
-      imageUrl: "https://pixabay.com/get/gae97c7454ca5ba7d146f31ec012ecfb71622cd70bda8ceeeb66c47bb470997e8b6d1ff808d1a80fa9cb555cc07566ebd5003687df240ddecb398c2ca96469dc8_1280.jpg",
-      categoryId: seeds.id,
-      stock: 50,
-      tags: ["drought-resistant", "high yield", "corn"],
-      isBestSeller: false
-    });
-
-    this.createProduct({
-      name: "Premium Hand Tools Set",
-      description: "Professional-grade garden tools. Includes trowel, pruners, and cultivator.",
-      price: 74.95,
-      unit: "5-piece set",
-      imageUrl: "https://pixabay.com/get/g80500fd100a18722dfa81adb9b2405ac0ebdcca554e54c1cf7db5621477878cf0b5bf1e3b712222d15b2d342315c879b09a04339705527ae34849451ff16da4c_1280.jpg",
-      categoryId: tools.id,
-      stock: 30,
-      tags: ["professional", "durable", "garden tools"],
-      isBestSeller: true
-    });
-
-    // Add equipment
-    this.createEquipment({
-      name: "John Deere 8R Tractor",
-      description: "Powerful row-crop tractor with precision technology. Includes GPS guidance system.",
-      price: 350.00, // per day
-      imageUrl: "https://pixabay.com/get/g946e199b4e2fa279bbc0eb13b62a691506539bd87b076da63a543490ffe70fd2da5044fb4a3df4b8b6cb2a13bfb70789128ac676fb4a4f50c8f2b119883c1486_1280.jpg",
-      availabilityStatus: "Available Now",
-      availabilityDate: null,
-      rating: 4.5,
-      reviewCount: 28,
-      features: ["370 HP", "Climate Controlled", "GPS Ready"],
-      contactPhone: "(555) 123-4567",
-      location: "Springfield, IL",
-      distanceInMiles: 15
-    });
-
-    this.createEquipment({
-      name: "Case IH Axial-Flow Combine",
-      description: "Efficient grain harvesting with minimal grain loss. Includes corn and grain heads.",
-      price: 500.00, // per day
-      imageUrl: "https://pixabay.com/get/g0edfd35fca82b169051f9150eb37740041514d0f5ef67bb095182c0daa4f84a4218deff6006c94d9f7d383c4825d9fb7ef337fbe7773e667792e5607e9cd34a1_1280.jpg",
-      availabilityStatus: "Available Sep 20",
-      availabilityDate: new Date("2023-09-20"),
-      rating: 4.0,
-      reviewCount: 15,
-      features: ["410 HP", "350 bu Capacity", "Yield Monitoring"],
-      contactPhone: "(555) 234-5678",
-      location: "Decatur, IL",
-      distanceInMiles: 25
-    });
-
-    this.createEquipment({
-      name: "Self-Propelled Sprayer",
-      description: "Precision application of fertilizers and crop protection products with 120' boom.",
-      price: 275.00, // per day
-      imageUrl: "https://pixabay.com/get/gb132713cb7c7ff757d78590dd3c38ba150e1051e2643d85ec605d44399167eb9d5bf35032c19b2b1e45d121b3a04728d473742030240967749684a99c94084c5_1280.jpg",
-      availabilityStatus: "Booked until Oct 5",
-      availabilityDate: new Date("2023-10-05"),
-      rating: 5.0,
-      reviewCount: 9,
-      features: ["1,000 gal Tank", "120' Boom", "Sectional Control"],
-      contactPhone: "(555) 345-6789",
-      location: "Champaign, IL",
-      distanceInMiles: 35
-    });
-
-    this.createEquipment({
-      name: "Harvest Crew (5 workers)",
-      description: "Experienced team for harvest season. Skilled in various crops and equipment operation.",
-      price: 950.00, // per day
-      imageUrl: "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=300",
-      availabilityStatus: "Available Now",
-      availabilityDate: null,
-      rating: 4.0,
-      reviewCount: 22,
-      features: ["Experienced", "All Certifications", "Equipment Operators"],
-      contactPhone: "(555) 456-7890",
-      location: "Bloomington, IL",
-      distanceInMiles: 45
-    });
-
-    // Add a test user
-    this.createUser({
-      username: "johnfarmer",
-      password: "password123",
-      fullName: "John Farmer",
-      email: "john@farmer.com",
-      phone: "(555) 987-6543",
-      address: "123 Farm Road, Farmington, IL 61234"
-    });
+    // Add sample data to storage
+    sampleCrops.forEach(crop => this.addCrop(crop));
+    sampleProducts.forEach(product => this.addProduct(product));
+    sampleEquipment.forEach(equip => this.addEquipment(equip));
+    sampleLabor.forEach(lab => this.addLabor(lab));
   }
 
   // User operations
@@ -308,219 +335,238 @@ export class MemStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.username === username);
+    return Array.from(this.users.values()).find(
+      (user) => user.username === username,
+    );
   }
 
-  async createUser(user: InsertUser): Promise<User> {
+  async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
-    const newUser: User = { ...user, id };
-    this.users.set(id, newUser);
-    return newUser;
+    const now = new Date();
+    const user: User = { ...insertUser, id, createdAt: now };
+    this.users.set(id, user);
+    return user;
   }
 
   // Crop operations
-  async getCrops(): Promise<Crop[]> {
-    return Array.from(this.crops.values());
+  private async addCrop(insertCrop: InsertCrop): Promise<Crop> {
+    const id = this.currentCropId++;
+    const now = new Date();
+    const crop: Crop = { ...insertCrop, id, updatedAt: now };
+    this.crops.set(id, crop);
+    return crop;
   }
 
-  async getCropsByMarket(marketId: number): Promise<Crop[]> {
-    return Array.from(this.crops.values()).filter(crop => crop.marketId === marketId);
+  async getAllCrops(): Promise<Crop[]> {
+    return Array.from(this.crops.values());
   }
 
   async getCrop(id: number): Promise<Crop | undefined> {
     return this.crops.get(id);
   }
 
-  async createCrop(crop: InsertCrop): Promise<Crop> {
-    const id = this.currentCropId++;
-    const newCrop: Crop = { ...crop, id };
-    this.crops.set(id, newCrop);
-    return newCrop;
-  }
-
-  async updateCrop(id: number, crop: Partial<InsertCrop>): Promise<Crop | undefined> {
-    const existingCrop = this.crops.get(id);
-    if (!existingCrop) return undefined;
-    
-    const updatedCrop: Crop = { ...existingCrop, ...crop };
-    this.crops.set(id, updatedCrop);
-    return updatedCrop;
-  }
-
-  // Market operations
-  async getMarkets(): Promise<Market[]> {
-    return Array.from(this.markets.values());
-  }
-
-  async getMarket(id: number): Promise<Market | undefined> {
-    return this.markets.get(id);
-  }
-
-  async createMarket(market: InsertMarket): Promise<Market> {
-    const id = this.currentMarketId++;
-    const newMarket: Market = { ...market, id };
-    this.markets.set(id, newMarket);
-    return newMarket;
-  }
-
-  // Product Category operations
-  async getProductCategories(): Promise<ProductCategory[]> {
-    return Array.from(this.productCategories.values());
-  }
-
-  async getProductCategory(id: number): Promise<ProductCategory | undefined> {
-    return this.productCategories.get(id);
-  }
-
-  async createProductCategory(category: InsertProductCategory): Promise<ProductCategory> {
-    const id = this.currentProductCategoryId++;
-    const newCategory: ProductCategory = { ...category, id };
-    this.productCategories.set(id, newCategory);
-    return newCategory;
+  async updateCrop(crop: Crop): Promise<Crop> {
+    this.crops.set(crop.id, crop);
+    return crop;
   }
 
   // Product operations
-  async getProducts(): Promise<Product[]> {
+  private async addProduct(insertProduct: InsertProduct): Promise<Product> {
+    const id = this.currentProductId++;
+    const product: Product = { ...insertProduct, id };
+    this.products.set(id, product);
+    return product;
+  }
+
+  async getAllProducts(): Promise<Product[]> {
     return Array.from(this.products.values());
   }
 
-  async getProductsByCategory(categoryId: number): Promise<Product[]> {
-    return Array.from(this.products.values()).filter(product => product.categoryId === categoryId);
+  async getProductsByCategory(category: string): Promise<Product[]> {
+    return Array.from(this.products.values()).filter(
+      (product) => product.category === category
+    );
   }
 
   async getProduct(id: number): Promise<Product | undefined> {
     return this.products.get(id);
   }
 
-  async createProduct(product: InsertProduct): Promise<Product> {
-    const id = this.currentProductId++;
-    const newProduct: Product = { ...product, id };
-    this.products.set(id, newProduct);
-    return newProduct;
-  }
-
-  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined> {
-    const existingProduct = this.products.get(id);
-    if (!existingProduct) return undefined;
-    
-    const updatedProduct: Product = { ...existingProduct, ...product };
-    this.products.set(id, updatedProduct);
-    return updatedProduct;
-  }
-
-  async updateProductStock(id: number, quantity: number): Promise<Product | undefined> {
-    const existingProduct = this.products.get(id);
-    if (!existingProduct) return undefined;
-    
-    const updatedProduct: Product = { 
-      ...existingProduct, 
-      stock: Math.max(0, existingProduct.stock - quantity)
-    };
-    this.products.set(id, updatedProduct);
-    return updatedProduct;
-  }
-
-  // Equipment operations
-  async getEquipment(): Promise<Equipment[]> {
-    return Array.from(this.equipment.values());
-  }
-
-  async getEquipmentByDistance(maxDistance: number): Promise<Equipment[]> {
-    return Array.from(this.equipment.values())
-      .filter(item => item.distanceInMiles <= maxDistance);
-  }
-
-  async getEquipmentItem(id: number): Promise<Equipment | undefined> {
-    return this.equipment.get(id);
-  }
-
-  async createEquipment(equipment: InsertEquipment): Promise<Equipment> {
-    const id = this.currentEquipmentId++;
-    const newEquipment: Equipment = { ...equipment, id };
-    this.equipment.set(id, newEquipment);
-    return newEquipment;
-  }
-
-  async updateEquipment(id: number, equipment: Partial<InsertEquipment>): Promise<Equipment | undefined> {
-    const existingEquipment = this.equipment.get(id);
-    if (!existingEquipment) return undefined;
-    
-    const updatedEquipment: Equipment = { ...existingEquipment, ...equipment };
-    this.equipment.set(id, updatedEquipment);
-    return updatedEquipment;
-  }
-
   // Order operations
-  async getOrders(userId: number): Promise<Order[]> {
-    return Array.from(this.orders.values())
-      .filter(order => order.userId === userId);
-  }
-
-  async getOrder(id: number): Promise<OrderWithItems | undefined> {
-    const order = this.orders.get(id);
-    if (!order) return undefined;
-
-    const items = await this.getOrderItems(id);
-    const itemsWithProducts = await Promise.all(items.map(async item => {
-      const product = await this.getProduct(item.productId);
-      return { ...item, product: product! };
-    }));
-
-    return { ...order, items: itemsWithProducts };
-  }
-
-  async createOrder(order: InsertOrder): Promise<Order> {
+  async createOrder(insertOrder: InsertOrder): Promise<Order> {
     const id = this.currentOrderId++;
-    const newOrder: Order = { ...order, id };
-    this.orders.set(id, newOrder);
-    return newOrder;
+    const now = new Date();
+    const order: Order = { ...insertOrder, id, orderDate: now };
+    this.orders.set(id, order);
+    return order;
   }
 
-  async createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem> {
+  async getOrdersByUser(userId: number): Promise<Order[]> {
+    return Array.from(this.orders.values()).filter(
+      (order) => order.userId === userId
+    );
+  }
+
+  async getOrder(id: number): Promise<Order | undefined> {
+    return this.orders.get(id);
+  }
+
+  async getOrderByNumber(orderNumber: string): Promise<Order | undefined> {
+    return Array.from(this.orders.values()).find(
+      (order) => order.orderNumber === orderNumber
+    );
+  }
+
+  // Order Item operations
+  async addOrderItem(insertOrderItem: InsertOrderItem): Promise<OrderItem> {
     const id = this.currentOrderItemId++;
-    const newOrderItem: OrderItem = { ...orderItem, id };
-    this.orderItems.set(id, newOrderItem);
-    return newOrderItem;
+    const orderItem: OrderItem = { ...insertOrderItem, id };
+    this.orderItems.set(id, orderItem);
+    return orderItem;
   }
 
   async getOrderItems(orderId: number): Promise<OrderItem[]> {
-    return Array.from(this.orderItems.values())
-      .filter(item => item.orderId === orderId);
+    return Array.from(this.orderItems.values()).filter(
+      (item) => item.orderId === orderId
+    );
   }
 
-  async updateOrderStatus(id: number, status: string): Promise<Order | undefined> {
-    const existingOrder = this.orders.get(id);
-    if (!existingOrder) return undefined;
+  // Equipment operations
+  private async addEquipment(insertEquipment: InsertEquipment): Promise<Equipment> {
+    const id = this.currentEquipmentId++;
+    const equipment: Equipment = { ...insertEquipment, id };
+    this.equipment.set(id, equipment);
+    return equipment;
+  }
+
+  async getAllEquipment(): Promise<Equipment[]> {
+    return Array.from(this.equipment.values());
+  }
+
+  async getEquipment(id: number): Promise<Equipment | undefined> {
+    return this.equipment.get(id);
+  }
+
+  // Labor operations
+  private async addLabor(insertLabor: InsertLabor): Promise<Labor> {
+    const id = this.currentLaborId++;
+    const labor: Labor = { ...insertLabor, id };
+    this.labor.set(id, labor);
+    return labor;
+  }
+
+  async getAllLabor(): Promise<Labor[]> {
+    return Array.from(this.labor.values());
+  }
+
+  async getLabor(id: number): Promise<Labor | undefined> {
+    return this.labor.get(id);
+  }
+
+  // Rental Request operations
+  async createRentalRequest(insertRequest: InsertRentalRequest): Promise<RentalRequest> {
+    const id = this.currentRentalRequestId++;
+    const now = new Date();
+    // Generate a unique ticket number
+    const ticketNumber = `RT-${Date.now().toString().slice(-6)}-${id}`;
+    const request: RentalRequest = { 
+      ...insertRequest, 
+      id, 
+      status: 'Pending', 
+      ticketNumber, 
+      createdAt: now 
+    };
+    this.rentalRequests.set(id, request);
+    return request;
+  }
+
+  async getRentalRequestsByUser(userId: number): Promise<RentalRequest[]> {
+    return Array.from(this.rentalRequests.values()).filter(
+      (request) => request.userId === userId
+    );
+  }
+
+  // Price Alert operations
+  async createPriceAlert(insertAlert: InsertPriceAlert): Promise<PriceAlert> {
+    const id = this.currentPriceAlertId++;
+    const now = new Date();
+    const alert: PriceAlert = { 
+      ...insertAlert, 
+      id, 
+      isActive: true, 
+      createdAt: now 
+    };
+    this.priceAlerts.set(id, alert);
+    return alert;
+  }
+
+  async getPriceAlertsByUser(userId: number): Promise<PriceAlert[]> {
+    return Array.from(this.priceAlerts.values()).filter(
+      (alert) => alert.userId === userId
+    );
+  }
+
+  // Cart operations
+  async getCartItems(userId: number): Promise<{ cartItem: CartItem; product: Product }[]> {
+    const userCartItems = Array.from(this.cartItems.values()).filter(
+      (item) => item.userId === userId
+    );
     
-    const updatedOrder: Order = { ...existingOrder, status };
-    this.orders.set(id, updatedOrder);
-    return updatedOrder;
+    return Promise.all(
+      userCartItems.map(async (cartItem) => {
+        const product = await this.getProduct(cartItem.productId);
+        if (!product) {
+          throw new Error(`Product with ID ${cartItem.productId} not found`);
+        }
+        return { cartItem, product };
+      })
+    );
   }
 
-  // Rental booking operations
-  async getRentalBookings(userId: number): Promise<RentalBooking[]> {
-    return Array.from(this.rentalBookings.values())
-      .filter(booking => booking.userId === userId);
+  async addToCart(insertCartItem: InsertCartItem): Promise<CartItem> {
+    // Check if this product is already in the cart
+    const existingItem = Array.from(this.cartItems.values()).find(
+      (item) => item.userId === insertCartItem.userId && item.productId === insertCartItem.productId
+    );
+
+    if (existingItem) {
+      // Update the quantity instead of adding a new item
+      return this.updateCartItem(existingItem.id, existingItem.quantity + insertCartItem.quantity) as Promise<CartItem>;
+    }
+
+    // Add new item to cart
+    const id = this.currentCartItemId++;
+    const now = new Date();
+    const cartItem: CartItem = { ...insertCartItem, id, addedAt: now };
+    this.cartItems.set(id, cartItem);
+    return cartItem;
   }
 
-  async getRentalBooking(id: number): Promise<RentalBooking | undefined> {
-    return this.rentalBookings.get(id);
+  async updateCartItem(id: number, quantity: number): Promise<CartItem | undefined> {
+    const cartItem = this.cartItems.get(id);
+    if (!cartItem) {
+      return undefined;
+    }
+
+    const updatedItem: CartItem = { ...cartItem, quantity };
+    this.cartItems.set(id, updatedItem);
+    return updatedItem;
   }
 
-  async createRentalBooking(booking: InsertRentalBooking): Promise<RentalBooking> {
-    const id = this.currentRentalBookingId++;
-    const newBooking: RentalBooking = { ...booking, id };
-    this.rentalBookings.set(id, newBooking);
-    return newBooking;
+  async removeFromCart(id: number): Promise<boolean> {
+    return this.cartItems.delete(id);
   }
 
-  async updateRentalBookingStatus(id: number, status: string): Promise<RentalBooking | undefined> {
-    const existingBooking = this.rentalBookings.get(id);
-    if (!existingBooking) return undefined;
-    
-    const updatedBooking: RentalBooking = { ...existingBooking, status };
-    this.rentalBookings.set(id, updatedBooking);
-    return updatedBooking;
+  async clearCart(userId: number): Promise<boolean> {
+    const userCartItems = Array.from(this.cartItems.values()).filter(
+      (item) => item.userId === userId
+    );
+
+    userCartItems.forEach((item) => {
+      this.cartItems.delete(item.id);
+    });
+
+    return true;
   }
 }
 

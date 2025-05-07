@@ -1,230 +1,205 @@
-import { pgTable, text, serial, integer, boolean, timestamp, doublePrecision, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, doublePrecision, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// User schema
+// User model
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  fullName: text("full_name").notNull(),
   email: text("email").notNull(),
-  phone: text("phone"),
+  fullName: text("full_name").notNull(),
   address: text("address"),
+  phone: text("phone"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-  fullName: true,
-  email: true,
-  phone: true,
-  address: true,
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true
 });
 
-// Crop price schema
+// Crop model with price information
 export const crops = pgTable("crops", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   variety: text("variety").notNull(),
   currentPrice: doublePrecision("current_price").notNull(),
   previousPrice: doublePrecision("previous_price").notNull(),
+  change: doublePrecision("change").notNull(),
+  percentChange: doublePrecision("percent_change").notNull(),
+  trend: text("trend").notNull(), // 'up' or 'down'
   imageUrl: text("image_url").notNull(),
-  lastUpdated: timestamp("last_updated").notNull(),
-  marketId: integer("market_id").notNull(),
+  priceHistory: jsonb("price_history").notNull(), // Array of historical prices
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const insertCropSchema = createInsertSchema(crops).pick({
-  name: true,
-  variety: true,
-  currentPrice: true,
-  previousPrice: true,
-  imageUrl: true,
-  lastUpdated: true,
-  marketId: true,
+export const insertCropSchema = createInsertSchema(crops).omit({
+  id: true,
+  updatedAt: true
 });
 
-// Market schema
-export const markets = pgTable("markets", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-});
-
-export const insertMarketSchema = createInsertSchema(markets).pick({
-  name: true,
-});
-
-// Product category schema
-export const productCategories = pgTable("product_categories", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-});
-
-export const insertProductCategorySchema = createInsertSchema(productCategories).pick({
-  name: true,
-});
-
-// Product schema
+// Product model for marketplace
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description").notNull(),
   price: doublePrecision("price").notNull(),
-  unit: text("unit").notNull(),
+  category: text("category").notNull(), // 'Seeds', 'Fertilizers', 'Pesticides', 'Tools', 'Equipment'
   imageUrl: text("image_url").notNull(),
-  categoryId: integer("category_id").notNull(),
-  stock: integer("stock").notNull(),
-  tags: text("tags").array(),
-  isBestSeller: boolean("is_best_seller").default(false),
+  unit: text("unit").notNull(), // e.g., '50lb Bag', '1L Bottle', etc.
+  inStock: boolean("in_stock").default(true).notNull(),
+  tags: jsonb("tags").notNull(), // Array of tags like 'Organic', 'Non-GMO', etc.
 });
 
-export const insertProductSchema = createInsertSchema(products).pick({
-  name: true,
-  description: true,
-  price: true,
-  unit: true,
-  imageUrl: true,
-  categoryId: true,
-  stock: true,
-  tags: true,
-  isBestSeller: true,
+export const insertProductSchema = createInsertSchema(products).omit({
+  id: true
 });
 
-// Equipment schema
-export const equipment = pgTable("equipment", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  description: text("description").notNull(),
-  price: doublePrecision("price").notNull(), // price per day
-  imageUrl: text("image_url").notNull(),
-  availabilityStatus: text("availability_status").notNull(),
-  availabilityDate: timestamp("availability_date"),
-  rating: doublePrecision("rating"),
-  reviewCount: integer("review_count"),
-  features: text("features").array(),
-  contactPhone: text("contact_phone").notNull(),
-  location: text("location").notNull(),
-  distanceInMiles: integer("distance_in_miles"),
-});
-
-export const insertEquipmentSchema = createInsertSchema(equipment).pick({
-  name: true,
-  description: true,
-  price: true,
-  imageUrl: true,
-  availabilityStatus: true,
-  availabilityDate: true,
-  rating: true,
-  reviewCount: true,
-  features: true,
-  contactPhone: true,
-  location: true,
-  distanceInMiles: true,
-});
-
-// Order schema
+// Order model
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
-  orderDate: timestamp("order_date").notNull(),
-  status: text("status").notNull(),
+  orderNumber: text("order_number").notNull().unique(),
+  orderDate: timestamp("order_date").defaultNow().notNull(),
   subtotal: doublePrecision("subtotal").notNull(),
-  tax: doublePrecision("tax").notNull(),
-  shipping: doublePrecision("shipping").notNull(),
+  shippingCost: doublePrecision("shipping_cost").notNull(),
   total: doublePrecision("total").notNull(),
+  status: text("status").notNull(), // 'Pending', 'Processing', 'Shipped', 'Delivered'
   shippingAddress: text("shipping_address").notNull(),
   paymentMethod: text("payment_method").notNull(),
 });
 
-export const insertOrderSchema = createInsertSchema(orders).pick({
-  userId: true,
-  orderDate: true,
-  status: true,
-  subtotal: true,
-  tax: true,
-  shipping: true,
-  total: true,
-  shippingAddress: true,
-  paymentMethod: true,
+export const insertOrderSchema = createInsertSchema(orders).omit({
+  id: true,
+  orderDate: true
 });
 
-// Order item schema
+// Order Item model
 export const orderItems = pgTable("order_items", {
   id: serial("id").primaryKey(),
   orderId: integer("order_id").notNull(),
   productId: integer("product_id").notNull(),
   quantity: integer("quantity").notNull(),
   price: doublePrecision("price").notNull(),
+  subtotal: doublePrecision("subtotal").notNull(),
 });
 
-export const insertOrderItemSchema = createInsertSchema(orderItems).pick({
-  orderId: true,
-  productId: true,
-  quantity: true,
-  price: true,
+export const insertOrderItemSchema = createInsertSchema(orderItems).omit({
+  id: true
 });
 
-// Rental booking schema
-export const rentalBookings = pgTable("rental_bookings", {
+// Equipment model for rentals
+export const equipment = pgTable("equipment", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  model: text("model").notNull(),
+  description: text("description").notNull(),
+  imageUrl: text("image_url").notNull(),
+  availableUnits: integer("available_units").notNull(),
+  dailyRate: doublePrecision("daily_rate").notNull(),
+  weeklyRate: doublePrecision("weekly_rate").notNull(),
+  category: text("category").notNull(), // 'Tractor', 'Harvester', 'Plow', etc.
+});
+
+export const insertEquipmentSchema = createInsertSchema(equipment).omit({
+  id: true
+});
+
+// Labor model for worker rentals
+export const labor = pgTable("labor", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  imageUrl: text("image_url").notNull(),
+  hourlyRate: doublePrecision("hourly_rate").notNull(),
+  availability: text("availability").notNull(), // 'Immediate', 'From <date>', etc.
+  skills: jsonb("skills").notNull(), // Array of skills
+});
+
+export const insertLaborSchema = createInsertSchema(labor).omit({
+  id: true
+});
+
+// Rental Request model
+export const rentalRequests = pgTable("rental_requests", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
-  equipmentId: integer("equipment_id").notNull(),
+  requestType: text("request_type").notNull(), // 'Equipment', 'Labor', 'Both'
   startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date").notNull(),
-  totalPrice: doublePrecision("total_price").notNull(),
-  status: text("status").notNull(),
-  bookingDate: timestamp("booking_date").notNull(),
-  ticketNumber: text("ticket_number").notNull(),
+  duration: text("duration").notNull(),
+  farmSize: integer("farm_size").notNull(), // in acres
+  description: text("description").notNull(),
+  status: text("status").notNull().default('Pending'), // 'Pending', 'Approved', 'Rejected'
+  ticketNumber: text("ticket_number").notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertRentalBookingSchema = createInsertSchema(rentalBookings).pick({
-  userId: true,
-  equipmentId: true,
-  startDate: true,
-  endDate: true,
-  totalPrice: true,
+export const insertRentalRequestSchema = createInsertSchema(rentalRequests).omit({
+  id: true,
   status: true,
-  bookingDate: true,
   ticketNumber: true,
+  createdAt: true
 });
 
-// Define the types
-export type InsertUser = z.infer<typeof insertUserSchema>;
+// Price Alert model
+export const priceAlerts = pgTable("price_alerts", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  cropId: integer("crop_id").notNull(),
+  alertType: text("alert_type").notNull(), // 'above' or 'below'
+  priceThreshold: doublePrecision("price_threshold").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertPriceAlertSchema = createInsertSchema(priceAlerts).omit({
+  id: true,
+  isActive: true,
+  createdAt: true
+});
+
+// Cart model (temporary storage for shopping cart items)
+export const cartItems = pgTable("cart_items", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  productId: integer("product_id").notNull(),
+  quantity: integer("quantity").notNull(),
+  addedAt: timestamp("added_at").defaultNow().notNull(),
+});
+
+export const insertCartItemSchema = createInsertSchema(cartItems).omit({
+  id: true,
+  addedAt: true
+});
+
+// Type exports for all schemas
 export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
 
-export type InsertCrop = z.infer<typeof insertCropSchema>;
 export type Crop = typeof crops.$inferSelect;
+export type InsertCrop = z.infer<typeof insertCropSchema>;
 
-export type InsertMarket = z.infer<typeof insertMarketSchema>;
-export type Market = typeof markets.$inferSelect;
-
-export type InsertProductCategory = z.infer<typeof insertProductCategorySchema>;
-export type ProductCategory = typeof productCategories.$inferSelect;
-
-export type InsertProduct = z.infer<typeof insertProductSchema>;
 export type Product = typeof products.$inferSelect;
+export type InsertProduct = z.infer<typeof insertProductSchema>;
 
-export type InsertEquipment = z.infer<typeof insertEquipmentSchema>;
-export type Equipment = typeof equipment.$inferSelect;
-
-export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type Order = typeof orders.$inferSelect;
+export type InsertOrder = z.infer<typeof insertOrderSchema>;
 
-export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
 export type OrderItem = typeof orderItems.$inferSelect;
+export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
 
-export type InsertRentalBooking = z.infer<typeof insertRentalBookingSchema>;
-export type RentalBooking = typeof rentalBookings.$inferSelect;
+export type Equipment = typeof equipment.$inferSelect;
+export type InsertEquipment = z.infer<typeof insertEquipmentSchema>;
 
-// Define an OrderWithItems type for returning orders with their items
-export type OrderWithItems = Order & { items: (OrderItem & { product: Product })[] };
+export type Labor = typeof labor.$inferSelect;
+export type InsertLabor = z.infer<typeof insertLaborSchema>;
 
-// Cart Item type (for frontend use)
-export type CartItem = {
-  productId: number;
-  name: string;
-  price: number;
-  quantity: number;
-  unit: string;
-  imageUrl: string;
-};
+export type RentalRequest = typeof rentalRequests.$inferSelect;
+export type InsertRentalRequest = z.infer<typeof insertRentalRequestSchema>;
+
+export type PriceAlert = typeof priceAlerts.$inferSelect;
+export type InsertPriceAlert = z.infer<typeof insertPriceAlertSchema>;
+
+export type CartItem = typeof cartItems.$inferSelect;
+export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
