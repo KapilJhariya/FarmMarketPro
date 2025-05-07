@@ -43,6 +43,11 @@ const Header = () => {
                 Equipment Rentals
               </a>
             </Link>
+            <Link href="/rentals/history">
+              <a className={`py-2 px-1 font-medium hover:underline ${location === '/rentals/history' ? 'underline' : ''}`}>
+                Rental History
+              </a>
+            </Link>
           </nav>
           
           <div className="flex items-center space-x-4">

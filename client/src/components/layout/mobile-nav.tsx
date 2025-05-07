@@ -76,6 +76,11 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
                 <a className="block py-2 px-4 hover:bg-gray-100 rounded-lg">Equipment Rentals</a>
               </Link>
             </li>
+            <li>
+              <Link href="/rentals/history">
+                <a className="block py-2 px-4 hover:bg-gray-100 rounded-lg">Rental History</a>
+              </Link>
+            </li>
             <li className="border-t pt-3 mt-4">
               <Link href="/order-history">
                 <a className="block py-2 px-4 hover:bg-gray-100 rounded-lg">My Account</a>
