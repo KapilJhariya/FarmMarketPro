@@ -14,6 +14,7 @@ import Marketplace from "@/pages/marketplace";
 import Rentals from "@/pages/rentals";
 import OrderConfirmation from "@/pages/order-confirmation";
 import OrderHistory from "@/pages/order-history";
+import MockReceipt from "@/pages/mock-receipt";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/rentals" component={Rentals} />
       <Route path="/order-confirmation/:orderId" component={OrderConfirmation} />
       <Route path="/order-history" component={OrderHistory} />
+      <Route path="/mock-receipt" component={MockReceipt} />
       <Route component={NotFound} />
     </Switch>
   );

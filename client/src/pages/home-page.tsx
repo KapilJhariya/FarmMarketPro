@@ -209,6 +209,18 @@ const HomePage = () => {
             linkText="Rent Equipment" 
           />
         </div>
+        
+        {/* Demo Link for Receipt */}
+        <div className="mt-12 bg-white p-6 rounded-lg shadow-sm text-center">
+          <h3 className="text-xl font-bold mb-2">New Feature Demo</h3>
+          <p className="text-gray-600 mb-4">Try our new PDF receipt generation feature</p>
+          <Button
+            asChild
+            className="bg-primary hover:bg-primary/90 text-white"
+          >
+            <a href="/mock-receipt">View Receipt Demo</a>
+          </Button>
+        </div>
       </div>
       
       {/* Market Updates Section */}
