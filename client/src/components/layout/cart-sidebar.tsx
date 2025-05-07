@@ -118,20 +118,7 @@ const CartSidebar = () => {
             <Button variant="outline" onClick={() => setShowReceiptDialog(false)}>
               Cancel
             </Button>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Button 
-                className="bg-primary hover:bg-primary/90"
-                onClick={downloadReceipt}
-                disabled={processingOrder}
-              >
-                {processingOrder ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Download className="h-4 w-4 mr-2" />
-                )}
-                Generate Receipt
-              </Button>
-              <Button 
+            <Button 
                 className="bg-green-600 hover:bg-green-700 text-white"
                 onClick={async () => {
                   setProcessingOrder(true);
@@ -140,29 +127,49 @@ const CartSidebar = () => {
                     const { mockOrder, products } = generateReceiptFromCart();
                     
                     // Create order with the API
-                    const orderResponse = await apiRequest("POST", "/api/orders", {
-                      userId: DEFAULT_USER_ID,
-                      orderNumber: mockOrder.orderNumber,
-                      subtotal: mockOrder.subtotal,
-                      shippingCost: mockOrder.shippingCost,
-                      total: mockOrder.total,
-                      status: "Processing",
-                      shippingAddress: mockOrder.shippingAddress,
-                      paymentMethod: mockOrder.paymentMethod
+                    const response = await fetch("/api/orders", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        userId: DEFAULT_USER_ID,
+                        orderNumber: mockOrder.orderNumber,
+                        subtotal: mockOrder.subtotal,
+                        shippingCost: mockOrder.shippingCost,
+                        total: mockOrder.total,
+                        status: "Processing",
+                        shippingAddress: mockOrder.shippingAddress,
+                        paymentMethod: mockOrder.paymentMethod
+                      })
                     });
                     
+                    if (!response.ok) {
+                      throw new Error("Failed to create order");
+                    }
+                    
                     // Parse the response to get the order data
-                    const order = await orderResponse.json();
+                    const order = await response.json();
                     console.log("Created order:", order);
                     
                     // Add each item to the order
                     for (const item of mockOrder.items) {
-                      await apiRequest("POST", `/api/orders/${order.id}/items`, {
-                        productId: item.productId,
-                        quantity: item.quantity,
-                        price: item.price,
-                        subtotal: item.subtotal
+                      const itemResponse = await fetch(`/api/orders/${order.id}/items`, {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          productId: item.productId,
+                          quantity: item.quantity,
+                          price: item.price,
+                          subtotal: item.subtotal
+                        })
                       });
+                      
+                      if (!itemResponse.ok) {
+                        console.warn("Failed to add item to order:", item);
+                      }
                     }
                     
                     // Download receipt
@@ -200,9 +207,8 @@ const CartSidebar = () => {
                 ) : (
                   <ShoppingCart className="h-4 w-4 mr-2" />
                 )}
-                Place Order & View History
+                Complete Order & View History
               </Button>
-            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

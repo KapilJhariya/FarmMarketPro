@@ -16,7 +16,7 @@ const OrderHistory = () => {
   const [activeTab, setActiveTab] = useState("orders");
 
   // Fetch user's orders
-  const { data: orders, isLoading: isLoadingOrders, refetch: refetchOrders } = useQuery({
+  const { data: orders = [], isLoading: isLoadingOrders, refetch: refetchOrders } = useQuery<any[]>({
     queryKey: [`/api/orders/user/${DEFAULT_USER_ID}`],
   });
   
@@ -26,7 +26,7 @@ const OrderHistory = () => {
   }, [refetchOrders]);
 
   // Fetch user's rental requests
-  const { data: rentalRequests, isLoading: isLoadingRentals } = useQuery({
+  const { data: rentalRequests = [], isLoading: isLoadingRentals } = useQuery<any[]>({
     queryKey: [`/api/rental-requests/user/${DEFAULT_USER_ID}`],
   });
 
@@ -136,7 +136,7 @@ const OrderHistory = () => {
                       </Card>
                     ))
                   ) : orders && orders.length > 0 ? (
-                    orders.map((order) => (
+                    orders.map((order: any) => (
                       <Card key={order.id} className="mb-4">
                         <CardContent className="p-6">
                           <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
@@ -213,7 +213,7 @@ const OrderHistory = () => {
                       </Card>
                     ))
                   ) : rentalRequests && rentalRequests.length > 0 ? (
-                    rentalRequests.map((request) => (
+                    rentalRequests.map((request: any) => (
                       <Card key={request.id} className="mb-4">
                         <CardContent className="p-6">
                           <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
