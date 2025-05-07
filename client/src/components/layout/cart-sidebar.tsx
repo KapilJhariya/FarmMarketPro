@@ -8,6 +8,8 @@ import { Loader2 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { downloadOrderReceipt } from "@/lib/pdf-generator";
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 const CartSidebar = () => {
   const { cart, isLoading, isCartOpen, closeCart } = useCart();
