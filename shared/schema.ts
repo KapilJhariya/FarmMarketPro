@@ -132,13 +132,14 @@ export const rentalRequests = pgTable("rental_requests", {
   description: text("description").notNull(),
   status: text("status").notNull().default('Pending'), // 'Pending', 'Approved', 'Rejected'
   ticketNumber: text("ticket_number").notNull().unique(),
+  contractorNumber: text("contractor_number").notNull(),
+  estimatedWaitTime: text("estimated_wait_time").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const insertRentalRequestSchema = createInsertSchema(rentalRequests).omit({
   id: true,
   status: true,
-  ticketNumber: true,
   createdAt: true
 });
 
