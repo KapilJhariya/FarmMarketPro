@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -16,9 +16,14 @@ const OrderHistory = () => {
   const [activeTab, setActiveTab] = useState("orders");
 
   // Fetch user's orders
-  const { data: orders, isLoading: isLoadingOrders } = useQuery({
+  const { data: orders, isLoading: isLoadingOrders, refetch: refetchOrders } = useQuery({
     queryKey: [`/api/orders/user/${DEFAULT_USER_ID}`],
   });
+  
+  // Refresh orders when component mounts
+  useEffect(() => {
+    refetchOrders();
+  }, [refetchOrders]);
 
   // Fetch user's rental requests
   const { data: rentalRequests, isLoading: isLoadingRentals } = useQuery({

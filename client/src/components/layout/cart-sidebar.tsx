@@ -12,10 +12,13 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 const CartSidebar = () => {
-  const { cart, isLoading, isCartOpen, closeCart } = useCart();
+  const { cart, isLoading, isCartOpen, closeCart, clearCart } = useCart();
   const [, navigate] = useLocation();
   const [showReceiptDialog, setShowReceiptDialog] = useState(false);
   const [processingOrder, setProcessingOrder] = useState(false);
+  const { toast } = useToast();
+  // Default user ID for demo purposes
+  const DEFAULT_USER_ID = 1;
 
   // Prevent body scrolling when cart is open
   useEffect(() => {
@@ -130,15 +133,73 @@ const CartSidebar = () => {
               </Button>
               <Button 
                 className="bg-green-600 hover:bg-green-700 text-white"
-                onClick={() => {
-                  downloadReceipt();
-                  setShowReceiptDialog(false);
-                  closeCart();
-                  navigate("/order-history");
+                onClick={async () => {
+                  setProcessingOrder(true);
+                  try {
+                    // Create the order in the database
+                    const { mockOrder, products } = generateReceiptFromCart();
+                    
+                    // Create order with the API
+                    const orderResponse = await apiRequest("POST", "/api/orders", {
+                      userId: DEFAULT_USER_ID,
+                      orderNumber: mockOrder.orderNumber,
+                      subtotal: mockOrder.subtotal,
+                      shippingCost: mockOrder.shippingCost,
+                      total: mockOrder.total,
+                      status: "Processing",
+                      shippingAddress: mockOrder.shippingAddress,
+                      paymentMethod: mockOrder.paymentMethod
+                    });
+                    
+                    // Parse the response to get the order data
+                    const order = await orderResponse.json();
+                    console.log("Created order:", order);
+                    
+                    // Add each item to the order
+                    for (const item of mockOrder.items) {
+                      await apiRequest("POST", `/api/orders/${order.id}/items`, {
+                        productId: item.productId,
+                        quantity: item.quantity,
+                        price: item.price,
+                        subtotal: item.subtotal
+                      });
+                    }
+                    
+                    // Download receipt
+                    downloadOrderReceipt(mockOrder, products);
+                    
+                    // Clear the cart
+                    await clearCart();
+                    
+                    // Show success toast
+                    toast({
+                      title: "Order Placed Successfully",
+                      description: "Your order has been placed and will be processed shortly.",
+                      variant: "default",
+                    });
+                    
+                    // Close dialog and navigate to order history
+                    setShowReceiptDialog(false);
+                    closeCart();
+                    navigate("/order-history");
+                  } catch (error) {
+                    console.error("Error placing order:", error);
+                    toast({
+                      title: "Error",
+                      description: "There was a problem creating your order. Please try again.",
+                      variant: "destructive",
+                    });
+                  } finally {
+                    setProcessingOrder(false);
+                  }
                 }}
                 disabled={processingOrder}
               >
-                <ShoppingCart className="h-4 w-4 mr-2" />
+                {processingOrder ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                )}
                 Place Order & View History
               </Button>
             </div>
