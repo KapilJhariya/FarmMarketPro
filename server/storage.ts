@@ -33,6 +33,7 @@ export interface IStorage {
   getOrdersByUser(userId: number): Promise<Order[]>;
   getOrder(id: number): Promise<Order | undefined>;
   getOrderByNumber(orderNumber: string): Promise<Order | undefined>;
+  deleteOrder(id: number): Promise<boolean>;
   
   // Order Item operations
   addOrderItem(orderItem: InsertOrderItem): Promise<OrderItem>;
@@ -49,6 +50,7 @@ export interface IStorage {
   // Rental Request operations
   createRentalRequest(request: InsertRentalRequest): Promise<RentalRequest>;
   getRentalRequestsByUser(userId: number): Promise<RentalRequest[]>;
+  deleteRentalRequest(id: number): Promise<boolean>;
   
   // Price Alert operations
   createPriceAlert(alert: InsertPriceAlert): Promise<PriceAlert>;
@@ -416,6 +418,23 @@ export class MemStorage implements IStorage {
       (order) => order.orderNumber === orderNumber
     );
   }
+  
+  async deleteOrder(id: number): Promise<boolean> {
+    // First check if the order exists
+    const order = this.orders.get(id);
+    if (!order) {
+      return false;
+    }
+    
+    // Delete the order items related to this order
+    const orderItems = await this.getOrderItems(id);
+    for (const item of orderItems) {
+      this.orderItems.delete(item.id);
+    }
+    
+    // Finally delete the order
+    return this.orders.delete(id);
+  }
 
   // Order Item operations
   async addOrderItem(insertOrderItem: InsertOrderItem): Promise<OrderItem> {
@@ -484,6 +503,17 @@ export class MemStorage implements IStorage {
     return Array.from(this.rentalRequests.values()).filter(
       (request) => request.userId === userId
     );
+  }
+  
+  async deleteRentalRequest(id: number): Promise<boolean> {
+    // Check if the rental request exists
+    const request = this.rentalRequests.get(id);
+    if (!request) {
+      return false;
+    }
+    
+    // Delete the rental request
+    return this.rentalRequests.delete(id);
   }
 
   // Price Alert operations

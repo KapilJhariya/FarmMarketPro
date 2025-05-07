@@ -99,7 +99,13 @@ const OrderHistory = () => {
                   <CardTitle>Account Dashboard</CardTitle>
                   <CardDescription>Manage your orders and rental requests</CardDescription>
                 </div>
-                <Button variant="outline">Edit Profile</Button>
+                <Button 
+                  variant="outline" 
+                  className="flex items-center gap-1"
+                  onClick={() => setActiveTab("orders")}
+                >
+                  <span>Edit Orders</span>
+                </Button>
               </div>
             </CardHeader>
             <CardContent>

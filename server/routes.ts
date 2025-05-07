@@ -269,6 +269,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Error fetching order" });
     }
   });
+  
+  // Delete an order
+  app.delete("/api/orders/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const success = await storage.deleteOrder(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Order not found or could not be deleted" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      res.status(500).json({ message: "Error deleting order" });
+    }
+  });
 
   // Rental Request Routes
   app.post("/api/rental-requests", async (req: Request, res: Response) => {
@@ -310,6 +327,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(requests);
     } catch (error) {
       res.status(500).json({ message: "Error fetching rental requests" });
+    }
+  });
+  
+  // Delete a rental request
+  app.delete("/api/rental-requests/:id", async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const success = await storage.deleteRentalRequest(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Rental request not found or could not be deleted" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting rental request:", error);
+      res.status(500).json({ message: "Error deleting rental request" });
     }
   });
 
