@@ -16,6 +16,8 @@ const CartSidebar = () => {
   const [, navigate] = useLocation();
   const [showReceiptDialog, setShowReceiptDialog] = useState(false);
   const [processingOrder, setProcessingOrder] = useState(false);
+  const [shippingAddress, setShippingAddress] = useState("123 Farm Road, Farmington, IL 61234");
+  const [paymentMethod, setPaymentMethod] = useState("Credit Card ending in 4242");
   const { toast } = useToast();
   // Default user ID for demo purposes
   const DEFAULT_USER_ID = 1;
@@ -44,8 +46,8 @@ const CartSidebar = () => {
       shippingCost: cart.shippingCost,
       total: cart.total,
       status: "Processing",
-      shippingAddress: "123 Farm Road, Farmington, IL 61234",
-      paymentMethod: "Credit Card ending in 4242",
+      shippingAddress: shippingAddress,
+      paymentMethod: paymentMethod,
       items: cart.items.map(item => ({
         productId: item.productId,
         quantity: item.quantity,
@@ -85,6 +87,19 @@ const CartSidebar = () => {
     }
   };
 
+  // Validate form input
+  const validateOrder = () => {
+    if (!shippingAddress.trim()) {
+      toast({
+        title: "Shipping Address Required",
+        description: "Please enter your shipping address to continue.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    return true;
+  };
+
   // Original checkout function - now shows the receipt dialog instead
   const handleCheckout = async () => {
     try {
@@ -108,10 +123,43 @@ const CartSidebar = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
-            <div className="border rounded-md p-4 bg-gray-50">
+            <div className="border rounded-md p-4 bg-gray-50 mb-4">
               <p className="text-sm font-medium">Order Summary</p>
               <p className="text-sm text-gray-500">Total Items: {cart.items.length}</p>
               <p className="text-sm text-gray-500">Total Amount: {formatCurrency(cart.total)}</p>
+            </div>
+            
+            <div className="space-y-3">
+              <div>
+                <label htmlFor="shippingAddress" className="text-sm font-medium block mb-1">
+                  Shipping Address
+                </label>
+                <textarea 
+                  id="shippingAddress"
+                  className="w-full border rounded-md p-2 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+                  rows={3}
+                  value={shippingAddress}
+                  onChange={(e) => setShippingAddress(e.target.value)}
+                  placeholder="Enter your shipping address"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="paymentMethod" className="text-sm font-medium block mb-1">
+                  Payment Method
+                </label>
+                <select
+                  id="paymentMethod"
+                  className="w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                >
+                  <option value="Credit Card ending in 4242">Credit Card ending in 4242</option>
+                  <option value="PayPal">PayPal</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Cash on Delivery">Cash on Delivery</option>
+                </select>
+              </div>
             </div>
           </div>
           <DialogFooter className="flex-col sm:flex-row sm:justify-between gap-2">
@@ -121,6 +169,11 @@ const CartSidebar = () => {
             <Button 
                 className="bg-green-600 hover:bg-green-700 text-white"
                 onClick={async () => {
+                  // Validate inputs first
+                  if (!validateOrder()) {
+                    return;
+                  }
+                  
                   setProcessingOrder(true);
                   try {
                     // Create the order in the database
