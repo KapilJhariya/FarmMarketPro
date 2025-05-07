@@ -467,8 +467,8 @@ export class MemStorage implements IStorage {
   async createRentalRequest(insertRequest: InsertRentalRequest): Promise<RentalRequest> {
     const id = this.currentRentalRequestId++;
     const now = new Date();
-    // Generate a unique ticket number
-    const ticketNumber = `RT-${Date.now().toString().slice(-6)}-${id}`;
+    // Use provided ticket number or generate a new one
+    const ticketNumber = insertRequest.ticketNumber || `RT-${Date.now().toString().slice(-6)}-${id}`;
     const request: RentalRequest = { 
       ...insertRequest, 
       id, 

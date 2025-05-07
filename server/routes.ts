@@ -273,11 +273,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rental Request Routes
   app.post("/api/rental-requests", async (req: Request, res: Response) => {
     try {
-      const rentalData = insertRentalRequestSchema.parse(req.body);
-      const rentalRequest = await storage.createRentalRequest(rentalData);
+      console.log("Rental request body:", req.body);
+      const { userId, requestType, startDate, duration, farmSize, description, ticketNumber, contractorNumber, estimatedWaitTime } = req.body;
+      
+      if (!userId || !requestType || !startDate || !duration || !farmSize || !description || !ticketNumber || !contractorNumber || !estimatedWaitTime) {
+        return res.status(400).json({ 
+          message: "Missing required fields", 
+          received: { userId, requestType, startDate, duration, farmSize, description, ticketNumber, contractorNumber, estimatedWaitTime }
+        });
+      }
+      
+      // Create rental request with the provided data
+      const rentalRequest = await storage.createRentalRequest({
+        userId,
+        requestType,
+        startDate,
+        duration,
+        farmSize,
+        description,
+        ticketNumber,
+        contractorNumber,
+        estimatedWaitTime
+      });
+      
       res.status(201).json(rentalRequest);
     } catch (error) {
-      res.status(400).json({ message: "Invalid rental request data" });
+      console.error("Error creating rental request:", error);
+      res.status(400).json({ message: "Invalid rental request data", error: String(error) });
     }
   });
 

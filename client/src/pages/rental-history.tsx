@@ -7,14 +7,17 @@ import { formatDate } from "@/lib/utils";
 
 interface RentalRequest {
   id: number;
+  userId: number;
   ticketNumber: string;
   contractorNumber: string;
   estimatedWaitTime: string;
   requestType: string;
   startDate: string;
   duration: string;
+  farmSize: number;
   description: string;
   status: string;
+  createdAt: string;
 }
 
 export default function RentalHistory() {
