@@ -97,9 +97,9 @@ const CartSidebar = () => {
       <Dialog open={showReceiptDialog} onOpenChange={setShowReceiptDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Complete Your Order</DialogTitle>
+            <DialogTitle className="text-primary text-xl">Complete Your Order</DialogTitle>
             <DialogDescription>
-              Your order is ready to be processed. Would you like to generate a receipt for your records?
+              Your order is ready to be processed. You can generate a receipt for your records or complete the order and view it in your order history.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
@@ -113,18 +113,33 @@ const CartSidebar = () => {
             <Button variant="outline" onClick={() => setShowReceiptDialog(false)}>
               Cancel
             </Button>
-            <Button 
-              className="bg-primary hover:bg-primary/90"
-              onClick={downloadReceipt}
-              disabled={processingOrder}
-            >
-              {processingOrder ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Download className="h-4 w-4 mr-2" />
-              )}
-              Generate Receipt
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button 
+                className="bg-primary hover:bg-primary/90"
+                onClick={downloadReceipt}
+                disabled={processingOrder}
+              >
+                {processingOrder ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Download className="h-4 w-4 mr-2" />
+                )}
+                Generate Receipt
+              </Button>
+              <Button 
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => {
+                  downloadReceipt();
+                  setShowReceiptDialog(false);
+                  closeCart();
+                  navigate("/order-history");
+                }}
+                disabled={processingOrder}
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Place Order & View History
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
