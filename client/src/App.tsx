@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/context/cart-context";
 import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
 
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
@@ -16,6 +18,7 @@ import OrderConfirmation from "@/pages/order-confirmation";
 import OrderHistory from "@/pages/order-history";
 import RentalHistory from "@/pages/rental-history";
 import MockReceipt from "@/pages/mock-receipt";
+import AuthPage from "@/pages/auth-page";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -25,10 +28,14 @@ function Router() {
       <Route path="/prices" component={CropPrices} />
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/rentals" component={Rentals} />
-      <Route path="/rentals/history" component={RentalHistory} />
-      <Route path="/order-confirmation/:orderId" component={OrderConfirmation} />
-      <Route path="/order-history" component={OrderHistory} />
-      <Route path="/mock-receipt" component={MockReceipt} />
+      <Route path="/auth" component={AuthPage} />
+      
+      {/* Protected Routes */}
+      <ProtectedRoute path="/order-confirmation/:orderId" component={OrderConfirmation} />
+      <ProtectedRoute path="/order-history" component={OrderHistory} />
+      <ProtectedRoute path="/rentals/history" component={RentalHistory} />
+      <ProtectedRoute path="/mock-receipt" component={MockReceipt} />
+      
       <Route component={NotFound} />
     </Switch>
   );
@@ -39,16 +46,18 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light">
         <TooltipProvider>
-          <CartProvider>
-            <div className="min-h-screen flex flex-col">
-              <Header />
-              <main className="flex-grow">
-                <Router />
-              </main>
-              <Footer />
-            </div>
-            <Toaster />
-          </CartProvider>
+          <AuthProvider>
+            <CartProvider>
+              <div className="min-h-screen flex flex-col">
+                <Header />
+                <main className="flex-grow">
+                  <Router />
+                </main>
+                <Footer />
+              </div>
+              <Toaster />
+            </CartProvider>
+          </AuthProvider>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
