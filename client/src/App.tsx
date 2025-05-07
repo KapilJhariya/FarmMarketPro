@@ -14,6 +14,7 @@ import Marketplace from "@/pages/marketplace";
 import Rentals from "@/pages/rentals";
 import OrderConfirmation from "@/pages/order-confirmation";
 import OrderHistory from "@/pages/order-history";
+import RentalHistory from "@/pages/rental-history";
 import MockReceipt from "@/pages/mock-receipt";
 import NotFound from "@/pages/not-found";
 
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/prices" component={CropPrices} />
       <Route path="/marketplace" component={Marketplace} />
       <Route path="/rentals" component={Rentals} />
+      <Route path="/rentals/history" component={RentalHistory} />
       <Route path="/order-confirmation/:orderId" component={OrderConfirmation} />
       <Route path="/order-history" component={OrderHistory} />
       <Route path="/mock-receipt" component={MockReceipt} />
