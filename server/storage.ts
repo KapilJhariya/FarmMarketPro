@@ -223,8 +223,7 @@ export class MemStorage implements IStorage {
         description: "High-quality organic fertilizer for all crops",
         price: 11000, // ₹11,000
         category: "Fertilizers",
-        imageUrl:
-          "https://pixabay.com/get/g339f989526ef7457dcfe5b8989e59cacf082420bf04ec1ad124e4ff9c720abcc19d3efdba80cf118159838c212f56ece96dbeb27a0dce2985cf6b143d092f12e_1280.jpg",
+        imageUrl: "/images/Images/premium organic fertilizer.jpeg",
         unit: "25kg Bag",
         inStock: true,
         tags: ["Organic", "Premium"],
@@ -234,8 +233,7 @@ export class MemStorage implements IStorage {
         description: "Complete set of garden tools for all your farming needs",
         price: 1300, // ₹1,300
         category: "Tools",
-        imageUrl:
-          "https://images.unsplash.com/photo-1582131503261-fca1d1c0589f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+        imageUrl: "/images/Images/Garden Tool kit.jpeg",
         unit: "5-Piece Set",
         inStock: true,
         tags: ["Best Seller", "Durable"],
@@ -246,8 +244,7 @@ export class MemStorage implements IStorage {
           "Collection of heirloom vegetable seeds for diverse planting",
         price: 300, // ₹300
         category: "Seeds",
-        imageUrl:
-          "https://pixabay.com/get/g4dfcba4e620a948c283c0f5ecb12938a6dd258cc41f640f7e4faeb85479f30bccfb93072f9f97c5c1d0111751d12f0c081aeed2892d21acfcf8f69406bcb39f1_1280.jpg",
+        imageUrl: "/images/Images/Heirloom Vegetable seeds.jpeg",
         unit: "20 Variety Pack",
         inStock: true,
         tags: ["Non-GMO", "Heirloom"],
@@ -257,8 +254,7 @@ export class MemStorage implements IStorage {
         description: "Natural pest control solution safe for organic farming",
         price: 690, // ₹690
         category: "Pesticides",
-        imageUrl:
-          "https://pixabay.com/get/ga2f1f794ea119827f3789c9ef07b1f4df764db10d4870364c6dbc39ad995cdc14964f17cb6e91691a2effb0657ccc8c9496280e8fee1e902d4f2783005cf1cee_1280.jpg",
+        imageUrl: "/images/Images/Organic pest control.jpeg",
         unit: "1L Concentrate",
         inStock: true,
         tags: ["Eco-Friendly", "Organic"],
@@ -268,8 +264,7 @@ export class MemStorage implements IStorage {
         description: "Durable, kink-resistant garden hose for farm irrigation",
         price: 2100, // ₹2,100
         category: "Tools",
-        imageUrl:
-          "https://pixabay.com/get/gacede183ce2aba93aec4e97fb5d3ace6fb33c62c0aa06e86d60b5e54cefd08be5a8db5fb78c055eb97afaf7f5e83b81b55f7f3c4c2eca6a89c2b7eb59aeec01a_1280.jpg",
+        imageUrl: "/images/Images/Heavy duty Hose.jpeg",
         unit: "30m Length",
         inStock: true,
         tags: ["Durable", "Heavy-Duty"],
@@ -280,8 +275,7 @@ export class MemStorage implements IStorage {
           "Professional soil pH testing kit for optimal crop management",
         price: 525, // ₹525
         category: "Tools",
-        imageUrl:
-          "https://pixabay.com/get/ga8c7cc2cb17fdfeaa6fe7a83a5b5e5b9d65e0cc25baef9de2b6a2fa835b5b7d0b1b9a2ef4b16a2db7e4d05cad2e8a0fdfaa8e3c5f0aad1af84c4acd25f6c0c1e_1280.jpg",
+        imageUrl: "/images/Images/Ph testing kit.jpeg",
         unit: "Complete Kit",
         inStock: true,
         tags: ["Professional", "Essential"],
@@ -294,8 +288,7 @@ export class MemStorage implements IStorage {
         name: "John Deere Tractor",
         model: "6120M, 120 HP",
         description: "Versatile tractor suitable for various farm operations",
-        imageUrl:
-          "https://pixabay.com/get/g440f6ef9c6af140cb22b6042bb50438021f289b481dbca852577c74c4abb008b64c36a5c8ce4380ea9bd86d4cd88a6e8e60c04430fbba77f2fdfe2a1b12abded_1280.jpg",
+        imageUrl: "/images/Images/John deere tractor.jpeg",
         availableUnits: 3,
         dailyRate: 456.0, // ₹456/day
         weeklyRate: 2800.0, // ₹2,800/week
@@ -306,8 +299,7 @@ export class MemStorage implements IStorage {
         model: "Case IH 7150, 350 HP",
         description:
           "High-performance combine harvester for efficient grain harvesting",
-        imageUrl:
-          "https://images.unsplash.com/photo-1592982537447-7440770cbfc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
+        imageUrl: "/images/Images/Harvestor.jpeg",
         availableUnits: 1,
         dailyRate: 5625.0, // ₹562.50 (reduced by factor of 1/100)
         weeklyRate: 2400.0, // ₹2,400.00 (reduced by factor of 1/100)
@@ -317,8 +309,7 @@ export class MemStorage implements IStorage {
         name: "Seed Drill",
         model: "Amazone D9-30",
         description: "Precision seed drill for consistent seed placement",
-        imageUrl:
-          "https://pixabay.com/get/g3a17f33b5afbd7ce6536de3fbca77f22307bb02097df3a14bba76adeb3bb3f38fd75e3607b80ec1f25c0b5b5d94e7664dc0f8da5d0a9ca7abe6f3ede3e9e5c8d_1280.jpg",
+        imageUrl: "/images/Images/Seed drill.jpeg",
         availableUnits: 2,
         dailyRate: 1875.0, // ₹187.50 (reduced by factor of 1/100)
         weeklyRate: 900.0, // ₹900.00 (reduced by factor of 1/100)
@@ -328,8 +319,7 @@ export class MemStorage implements IStorage {
         name: "Irrigation System",
         model: "Valley Center Pivot",
         description: "Efficient irrigation system for large fields",
-        imageUrl:
-          "https://pixabay.com/get/gd0e2c9f3a839e6f18d3b42f2bab10d79a0f4e3dc9b16cdcd9db0ddd0e28f0eb87b9c4b25c7095ba48cd35a0baf4a1efe84f453b11fe13e9c22654e90d21f8d44_1280.jpg",
+        imageUrl: "/images/Images/Irrigation system.jpeg",
         availableUnits: 2,
         dailyRate: 1500.0, // ₹150.00 (reduced by factor of 1/100)
         weeklyRate: 750.0, // ₹750.00 (reduced by factor of 1/100)
@@ -343,8 +333,7 @@ export class MemStorage implements IStorage {
         title: "Seasonal Farm Workers",
         description:
           "Team of 5-10 experienced workers for harvesting and planting",
-        imageUrl:
-          "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
+        imageUrl: "/images/Images/Equipment operator.jpeg",
         hourlyRate: 70, // ₹70/hr
         availability: "Immediate",
         skills: ["Harvesting", "Planting", "General Farm Work"],
@@ -353,8 +342,7 @@ export class MemStorage implements IStorage {
         title: "Equipment Operator",
         description:
           "Skilled operator for tractors, harvesters and other farm equipment",
-        imageUrl:
-          "https://images.unsplash.com/photo-1540479859555-17af45c78602?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
+        imageUrl: "/images/Images/Equipment operator.jpeg",
         hourlyRate: 49, // ₹49/hr
         availability: "From 08/15",
         skills: [
@@ -367,8 +355,7 @@ export class MemStorage implements IStorage {
         title: "Agricultural Technician",
         description:
           "Experienced technician for equipment setup and maintenance",
-        imageUrl:
-          "https://pixabay.com/get/g61ac3f90cc59d8d02f512a08a65f0fd40d9aa5e5db1d8ce45f6e75a46e99ac7af1b27f6f2bc9c1ebebf1ee4cf9ab76adb399e1ae1c18f12cb92c5a3f8cee9775_1280.jpg",
+        imageUrl: "/images/Images/Agriculture Technician.jpeg",
         hourlyRate: 100, // ₹100/hr
         availability: "Weekends Only",
         skills: ["Equipment Repair", "Machinery Setup", "Technical Support"],
