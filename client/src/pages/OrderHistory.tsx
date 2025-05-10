@@ -1,39 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useQuery } from "@tanstack/react-query";
-import { Order, RentalBooking } from "@shared/schema";
+import { Order, RentalRequest } from "@shared/schema";
 import OrderHistoryComponent from "@/components/orders/OrderHistory";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/hooks/use-auth";
+import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 
 export default function OrderHistory() {
   const [activeTab, setActiveTab] = useState("purchases");
+  const { user } = useAuth();
+  const [, navigate] = useLocation();
+  const { toast } = useToast();
   
-  // In a real application, we would get the user ID from authentication context
-  const userId = 1; // Using the test user ID
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to view your order history",
+        variant: "destructive",
+      });
+      navigate("/auth");
+    }
+  }, [user, navigate, toast]);
 
   const { 
     data: orders, 
     isLoading: isOrdersLoading, 
-    isError: isOrdersError 
+    isError: isOrdersError,
+    refetch: refetchOrders
   } = useQuery({
-    queryKey: [`/api/orders/user/${userId}`],
+    queryKey: user ? [`/api/orders/user/${user.id}`] : [],
     queryFn: async () => {
-      const res = await fetch(`/api/orders/user/${userId}`);
+      if (!user) return [];
+      const res = await fetch(`/api/orders/user/${user.id}`);
       return res.json() as Promise<Order[]>;
-    }
+    },
+    enabled: !!user
   });
 
   const { 
     data: rentals, 
     isLoading: isRentalsLoading, 
-    isError: isRentalsError 
+    isError: isRentalsError,
+    refetch: refetchRentals
   } = useQuery({
-    queryKey: [`/api/rental-bookings/user/${userId}`],
+    queryKey: user ? [`/api/rental-requests/user/${user.id}`] : [],
     queryFn: async () => {
-      const res = await fetch(`/api/rental-bookings/user/${userId}`);
-      return res.json() as Promise<RentalBooking[]>;
-    }
+      if (!user) return [];
+      const res = await fetch(`/api/rental-requests/user/${user.id}`);
+      return res.json() as Promise<RentalRequest[]>;
+    },
+    enabled: !!user
   });
+  
+  // Refresh data when user changes
+  useEffect(() => {
+    if (user) {
+      refetchOrders();
+      refetchRentals();
+    }
+  }, [user, refetchOrders, refetchRentals]);
 
   return (
     <>
