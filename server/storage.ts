@@ -260,8 +260,8 @@ export class MemStorage implements IStorage {
         description: "Versatile tractor suitable for various farm operations",
         imageUrl: "https://pixabay.com/get/g440f6ef9c6af140cb22b6042bb50438021f289b481dbca852577c74c4abb008b64c36a5c8ce4380ea9bd86d4cd88a6e8e60c04430fbba77f2fdfe2a1b12abded_1280.jpg",
         availableUnits: 3,
-        dailyRate: 26250, // ₹26,250 (converted from $350)
-        weeklyRate: 112500, // ₹112,500 (converted from $1,500)
+        dailyRate: 262.50, // ₹262.50 (reduced by factor of 1/100)
+        weeklyRate: 1125.00, // ₹1,125.00 (reduced by factor of 1/100)
         category: "Tractor"
       },
       {
@@ -270,8 +270,8 @@ export class MemStorage implements IStorage {
         description: "High-performance combine harvester for efficient grain harvesting",
         imageUrl: "https://images.unsplash.com/photo-1592982537447-7440770cbfc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
         availableUnits: 1,
-        dailyRate: 56250, // ₹56,250 (converted from $750)
-        weeklyRate: 240000, // ₹240,000 (converted from $3,200)
+        dailyRate: 562.50, // ₹562.50 (reduced by factor of 1/100)
+        weeklyRate: 2400.00, // ₹2,400.00 (reduced by factor of 1/100)
         category: "Harvester"
       },
       {
@@ -280,8 +280,8 @@ export class MemStorage implements IStorage {
         description: "Precision seed drill for consistent seed placement",
         imageUrl: "https://pixabay.com/get/g3a17f33b5afbd7ce6536de3fbca77f22307bb02097df3a14bba76adeb3bb3f38fd75e3607b80ec1f25c0b5b5d94e7664dc0f8da5d0a9ca7abe6f3ede3e9e5c8d_1280.jpg",
         availableUnits: 2,
-        dailyRate: 18750, // ₹18,750 (converted from $250)
-        weeklyRate: 90000, // ₹90,000 (converted from $1,200)
+        dailyRate: 187.50, // ₹187.50 (reduced by factor of 1/100)
+        weeklyRate: 900.00, // ₹900.00 (reduced by factor of 1/100)
         category: "Seeder"
       },
       {
@@ -290,8 +290,8 @@ export class MemStorage implements IStorage {
         description: "Efficient irrigation system for large fields",
         imageUrl: "https://pixabay.com/get/gd0e2c9f3a839e6f18d3b42f2bab10d79a0f4e3dc9b16cdcd9db0ddd0e28f0eb87b9c4b25c7095ba48cd35a0baf4a1efe84f453b11fe13e9c22654e90d21f8d44_1280.jpg",
         availableUnits: 2,
-        dailyRate: 15000, // ₹15,000 (converted from $200)
-        weeklyRate: 75000, // ₹75,000 (converted from $1,000)
+        dailyRate: 150.00, // ₹150.00 (reduced by factor of 1/100)
+        weeklyRate: 750.00, // ₹750.00 (reduced by factor of 1/100)
         category: "Irrigation"
       }
     ];
@@ -302,7 +302,7 @@ export class MemStorage implements IStorage {
         title: "Seasonal Farm Workers",
         description: "Team of 5-10 experienced workers for harvesting and planting",
         imageUrl: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
-        hourlyRate: 1125, // ₹1,125 (converted from $15)
+        hourlyRate: 11.25, // ₹11.25 (reduced by factor of 1/100)
         availability: "Immediate",
         skills: ["Harvesting", "Planting", "General Farm Work"]
       },
@@ -310,7 +310,7 @@ export class MemStorage implements IStorage {
         title: "Equipment Operator",
         description: "Skilled operator for tractors, harvesters and other farm equipment",
         imageUrl: "https://images.unsplash.com/photo-1540479859555-17af45c78602?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
-        hourlyRate: 1875, // ₹1,875 (converted from $25)
+        hourlyRate: 18.75, // ₹18.75 (reduced by factor of 1/100)
         availability: "From 08/15",
         skills: ["Tractor Operation", "Harvester Operation", "Equipment Maintenance"]
       },
@@ -318,7 +318,7 @@ export class MemStorage implements IStorage {
         title: "Agricultural Technician",
         description: "Experienced technician for equipment setup and maintenance",
         imageUrl: "https://pixabay.com/get/g61ac3f90cc59d8d02f512a08a65f0fd40d9aa5e5db1d8ce45f6e75a46e99ac7af1b27f6f2bc9c1ebebf1ee4cf9ab76adb399e1ae1c18f12cb92c5a3f8cee9775_1280.jpg",
-        hourlyRate: 2250, // ₹2,250 (converted from $30)
+        hourlyRate: 22.50, // ₹22.50 (reduced by factor of 1/100)
         availability: "Weekends Only",
         skills: ["Equipment Repair", "Machinery Setup", "Technical Support"]
       }
