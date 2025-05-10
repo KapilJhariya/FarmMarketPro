@@ -44,31 +44,21 @@ const Header = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6">
-            <Link href="/">
-              <a className={`py-2 px-1 font-medium hover:underline ${location === '/' ? 'underline' : ''}`}>
-                Home
-              </a>
+            <Link href="/" className={`py-2 px-1 font-medium hover:underline ${location === '/' ? 'underline' : ''}`}>
+              Home
             </Link>
-            <Link href="/prices">
-              <a className={`py-2 px-1 font-medium hover:underline ${location === '/prices' ? 'underline' : ''}`}>
-                Crop Prices
-              </a>
+            <Link href="/prices" className={`py-2 px-1 font-medium hover:underline ${location === '/prices' ? 'underline' : ''}`}>
+              Crop Prices
             </Link>
-            <Link href="/marketplace">
-              <a className={`py-2 px-1 font-medium hover:underline ${location === '/marketplace' ? 'underline' : ''}`}>
-                Marketplace
-              </a>
+            <Link href="/marketplace" className={`py-2 px-1 font-medium hover:underline ${location === '/marketplace' ? 'underline' : ''}`}>
+              Marketplace
             </Link>
-            <Link href="/rentals">
-              <a className={`py-2 px-1 font-medium hover:underline ${location === '/rentals' ? 'underline' : ''}`}>
-                Equipment Rentals
-              </a>
+            <Link href="/rentals" className={`py-2 px-1 font-medium hover:underline ${location === '/rentals' ? 'underline' : ''}`}>
+              Equipment Rentals
             </Link>
             {user && (
-              <Link href="/order-history">
-                <a className={`py-2 px-1 font-medium hover:underline ${location === '/order-history' ? 'underline' : ''}`}>
-                  My Account
-                </a>
+              <Link href="/order-history" className={`py-2 px-1 font-medium hover:underline ${location === '/order-history' ? 'underline' : ''}`}>
+                My Account
               </Link>
             )}
           </nav>

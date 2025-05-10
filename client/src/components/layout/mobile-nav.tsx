@@ -110,23 +110,23 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
         <nav className="p-4">
           <ul className="space-y-3">
             <li>
-              <Link href="/">
-                <a className="block py-2 px-4 hover:bg-gray-100 rounded-lg">Home</a>
+              <Link href="/" className="block py-2 px-4 hover:bg-gray-100 rounded-lg">
+                Home
               </Link>
             </li>
             <li>
-              <Link href="/prices">
-                <a className="block py-2 px-4 hover:bg-gray-100 rounded-lg">Crop Prices</a>
+              <Link href="/prices" className="block py-2 px-4 hover:bg-gray-100 rounded-lg">
+                Crop Prices
               </Link>
             </li>
             <li>
-              <Link href="/marketplace">
-                <a className="block py-2 px-4 hover:bg-gray-100 rounded-lg">Marketplace</a>
+              <Link href="/marketplace" className="block py-2 px-4 hover:bg-gray-100 rounded-lg">
+                Marketplace
               </Link>
             </li>
             <li>
-              <Link href="/rentals">
-                <a className="block py-2 px-4 hover:bg-gray-100 rounded-lg">Equipment Rentals</a>
+              <Link href="/rentals" className="block py-2 px-4 hover:bg-gray-100 rounded-lg">
+                Equipment Rentals
               </Link>
             </li>
             
@@ -134,21 +134,19 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
               <>
                 <Separator className="my-2" />
                 <li>
-                  <Link href="/order-history">
-                    <a className="flex items-center py-2 px-4 hover:bg-gray-100 rounded-lg">
-                      <User className="h-4 w-4 mr-2" />
-                      <span>My Account</span>
-                    </a>
+                  <Link href="/order-history" className="flex items-center py-2 px-4 hover:bg-gray-100 rounded-lg">
+                    <User className="h-4 w-4 mr-2" />
+                    <span>My Account</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/order-history">
-                    <a className="block py-2 px-4 hover:bg-gray-100 rounded-lg pl-10">Order History</a>
+                  <Link href="/order-history" className="block py-2 px-4 hover:bg-gray-100 rounded-lg pl-10">
+                    Order History
                   </Link>
                 </li>
                 <li>
-                  <Link href="/rentals/history">
-                    <a className="block py-2 px-4 hover:bg-gray-100 rounded-lg pl-10">Rental History</a>
+                  <Link href="/rentals/history" className="block py-2 px-4 hover:bg-gray-100 rounded-lg pl-10">
+                    Rental History
                   </Link>
                 </li>
                 <Separator className="my-2" />
