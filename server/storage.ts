@@ -123,68 +123,68 @@ export class MemStorage implements IStorage {
       {
         name: "Wheat",
         variety: "Common",
-        currentPrice: 240.34, // ₹240.34 (reduced by factor of 1/100)
-        previousPrice: 231.11, // ₹231.11 (reduced by factor of 1/100)
-        change: 9.23, // ₹9.23 (reduced by factor of 1/100)
+        currentPrice: 24800, // ₹24,800
+        previousPrice: 23900, // ₹23,900
+        change: 900, // ₹900
         percentChange: 3.8,
         trend: "up",
         imageUrl: "https://pixabay.com/get/gd624dd32f1da5fea4cd11e809bfc2ca6df3e07a91d9615e42e6a4b45c9292c54c5339bef94658687f4afbc0cc6fe30932fc5555c8c5df656e1d68580ced90ebb_1280.jpg",
-        priceHistory: [217.50, 221.25, 225.00, 228.75, 231.11, 240.34]
+        priceHistory: [22000, 22500, 23000, 23500, 23900, 24800]
       },
       {
         name: "Corn",
         variety: "Yellow",
-        currentPrice: 138.90, // ₹138.90 (reduced by factor of 1/100)
-        previousPrice: 143.14, // ₹143.14 (reduced by factor of 1/100)
-        change: -4.24, // -₹4.24 (reduced by factor of 1/100)
+        currentPrice: 21910, // ₹21,910
+        previousPrice: 22600, // ₹22,600
+        change: -690, // -₹690
         percentChange: -2.9,
         trend: "down",
         imageUrl: "https://images.unsplash.com/photo-1534313218094-b30d7888478c?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&h=50",
-        priceHistory: [146.25, 144.75, 144.00, 143.25, 143.14, 138.90]
+        priceHistory: [24000, 23500, 23100, 22800, 22600, 21910]
       },
       {
         name: "Soybeans",
         variety: "Standard",
-        currentPrice: 319.28, // ₹319.28 (reduced by factor of 1/100)
-        previousPrice: 312.60, // ₹312.60 (reduced by factor of 1/100)
-        change: 6.68, // ₹6.68 (reduced by factor of 1/100)
+        currentPrice: 42000, // ₹42,000
+        previousPrice: 41150, // ₹41,150
+        change: 850, // ₹850
         percentChange: 2.1,
         trend: "up",
         imageUrl: "https://pixabay.com/get/g36a9fd44ef1035d0efa51c912c3e774b089fc572c97b2e0ba3db2a46ee375e180bb32ec8004315c254aadefb2151f5e1e154923bc0a7dc550b16bef6af0c01ec_1280.jpg",
-        priceHistory: [300.00, 303.75, 307.50, 311.25, 312.60, 319.28]
+        priceHistory: [39000, 39800, 40500, 41000, 41150, 42000]
       },
       {
         name: "Rice",
         variety: "Long Grain",
-        currentPrice: 5.60, // ₹5.60 (reduced by factor of 1/100)
-        previousPrice: 5.45, // ₹5.45 (reduced by factor of 1/100)
-        change: 0.15, // ₹0.15 (reduced by factor of 1/100)
+        currentPrice: 33215, // ₹33,215
+        previousPrice: 32300, // ₹32,300
+        change: 915, // ₹915
         percentChange: 2.8,
         trend: "up",
         imageUrl: "https://pixabay.com/get/gd3f1914c6ab2b7bfc21dc6657b803bd0b50d9768acfb44f94f235dd328dab2f87bb079eac58dd8b7ce6adb3976d2cd2c7dffaa89cadf255f5cbf678056ca2fde_1280.jpg",
-        priceHistory: [5.20, 5.30, 5.35, 5.40, 5.45, 5.60]
+        priceHistory: [30800, 31200, 31700, 32000, 32300, 33215]
       },
       {
         name: "Barley",
         variety: "Feed",
-        currentPrice: 2.11, // ₹2.11 (reduced by factor of 1/100)
-        previousPrice: 2.06, // ₹2.06 (reduced by factor of 1/100)
-        change: 0.05, // ₹0.05 (reduced by factor of 1/100)
+        currentPrice: 6500, // ₹6,500
+        previousPrice: 6340, // ₹6,340
+        change: 160, // ₹160
         percentChange: 2.5,
         trend: "up",
         imageUrl: "https://pixabay.com/get/g0a2e1f2dc24ca6afbfec3ab47c7a14c4c1d2f07e71a08a88abf0ec9b5b323e11ac4aa4097cc5f242faf59a2e5e11a6c8a55b08e5f7beaf41bfd79c55e1ac15b9_1280.jpg",
-        priceHistory: [1.90, 1.95, 2.00, 2.05, 2.06, 2.11]
+        priceHistory: [6000, 6100, 6200, 6300, 6340, 6500]
       },
       {
         name: "Cotton",
         variety: "Upland",
-        currentPrice: 0.79, // ₹0.79 (reduced by factor of 1/100)
-        previousPrice: 0.82, // ₹0.82 (reduced by factor of 1/100)
-        change: -0.03, // -₹0.03 (reduced by factor of 1/100)
+        currentPrice: 63680, // ₹63,680
+        previousPrice: 66550, // ₹66,550
+        change: -2870, // -₹2,870
         percentChange: -4.3,
         trend: "down",
         imageUrl: "https://pixabay.com/get/g3afab27efa9d32a63d1c546ab2a301baa6f6b9dbc5df9cf4df5b89a0e42edb7e9eeee6ac56c5c9c0775e4b8eb38d7cb80fcaeff74ea2ad0c9c18ad74d3a0ecc5_1280.jpg",
-        priceHistory: [0.85, 0.84, 0.83, 0.82, 0.80, 0.79]
+        priceHistory: [68500, 68000, 67500, 66550, 65000, 63680]
       }
     ];
 
