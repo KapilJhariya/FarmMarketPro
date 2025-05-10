@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
@@ -22,6 +22,7 @@ import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
 import { generateOrderNumber } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 
 const checkoutFormSchema = z.object({
   fullName: z.string().min(2, { message: "Full name must be at least 2 characters" }),
@@ -43,9 +44,19 @@ export default function Checkout() {
   const { cartItems, subtotal, tax, shipping, total, clearCart } = useCart();
   const { toast } = useToast();
   const [processingOrder, setProcessingOrder] = useState(false);
-
-  // In a real application, we would get the user ID from authentication context
-  const userId = 1; // Using the test user ID
+  const { user } = useAuth();
+  
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to complete your checkout",
+        variant: "destructive",
+      });
+      navigate("/auth");
+    }
+  }, [user, navigate, toast]);
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -91,9 +102,21 @@ export default function Checkout() {
       // Format shipping address
       const shippingAddress = `${data.address}, ${data.city}, ${data.state} ${data.zip}`;
       
+      // Check if user is authenticated
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to complete your checkout",
+          variant: "destructive",
+        });
+        setProcessingOrder(false);
+        navigate("/auth");
+        return;
+      }
+      
       // Create order
       const orderData = {
-        userId,
+        userId: user.id,
         orderDate: new Date(),
         status: "Processing",
         subtotal,
