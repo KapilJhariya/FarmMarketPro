@@ -78,13 +78,26 @@ export default function Checkout() {
   const createOrderMutation = useMutation({
     mutationFn: async (order: any) => {
       return await apiRequest("POST", "/api/orders", order);
+    },
+    onSuccess: () => {
+      console.log("Order created successfully");
+    },
+    onError: (error) => {
+      console.error("Error creating order:", error);
     }
   });
 
   const createOrderItemMutation = useMutation({
     mutationFn: async (orderItem: any) => {
       const { orderId, ...rest } = orderItem;
+      // This is the correct endpoint that matches our server routes.ts
       return await apiRequest("POST", `/api/orders/${orderId}/items`, rest);
+    },
+    onSuccess: () => {
+      console.log("Order item created successfully");
+    },
+    onError: (error) => {
+      console.error("Error creating order item:", error);
     }
   });
 
@@ -122,40 +135,65 @@ export default function Checkout() {
         orderDate: new Date(),
         status: "Processing",
         subtotal,
-        shippingCost: shipping,
+        shippingCost,
         total,
         shippingAddress,
         paymentMethod: `Card ending in ${data.cardNumber.slice(-4)}`
       };
 
-      const orderResponse = await createOrderMutation.mutateAsync(orderData);
-      const orderJson = await orderResponse.json();
-      const orderId = orderJson.id;
-
-      // Create order items
-      for (const item of cartItems) {
-        const orderItemData = {
-          orderId,
-          productId: item.productId,
-          quantity: item.quantity,
-          price: item.price,
-          subtotal: item.price * item.quantity
-        };
-
-        await createOrderItemMutation.mutateAsync(orderItemData);
-      }
-
-      // Clear cart and redirect to order confirmation
-      clearCart();
-      toast({
-        title: "Order placed successfully",
-        description: "Thank you for your purchase!",
-        variant: "default"
-      });
+      console.log("Creating order with data:", orderData);
       
-      navigate(`/orders/${orderId}`);
+      try {
+        const orderResponse = await createOrderMutation.mutateAsync(orderData);
+        const orderJson = await orderResponse.json();
+        const orderId = orderJson.id;
+        console.log("Order created with id:", orderId);
+
+        // Create order items
+        try {
+          for (const item of cartItems) {
+            const orderItemData = {
+              orderId,
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.price,
+              subtotal: item.price * item.quantity
+            };
+            
+            console.log("Creating order item:", orderItemData);
+            await createOrderItemMutation.mutateAsync(orderItemData);
+          }
+          
+          // Success! Clear cart and show success message
+          await clearCart();
+          toast({
+            title: "Order placed successfully",
+            description: "Thank you for your purchase!",
+            variant: "default"
+          });
+          
+          navigate(`/orders/${orderId}`);
+        } catch (itemError) {
+          console.error("Failed to create order items:", itemError);
+          // The order was created but items failed
+          toast({
+            title: "Order placed successfully",
+            description: "Your order was processed, but there was an issue with some items.",
+            variant: "default"
+          });
+          navigate(`/orders/${orderId}`);
+        }
+      } catch (orderError) {
+        console.error("Failed to create order:", orderError);
+        toast({
+          title: "Failed to place order",
+          description: "An error occurred while processing your order. Please try again.",
+          variant: "destructive"
+        });
+        setProcessingOrder(false);
+      }
     } catch (error) {
-      console.error("Order creation failed:", error);
+      console.error("Order submission failed:", error);
       toast({
         title: "Failed to place order",
         description: "An error occurred while processing your order. Please try again.",
