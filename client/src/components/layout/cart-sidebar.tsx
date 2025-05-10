@@ -10,6 +10,7 @@ import { downloadOrderReceipt } from "@/lib/pdf-generator";
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 
 const CartSidebar = () => {
   const { cart, isLoading, isCartOpen, closeCart, clearCart } = useCart();
@@ -19,8 +20,7 @@ const CartSidebar = () => {
   const [shippingAddress, setShippingAddress] = useState("123 Farm Road, Farmington, IL 61234");
   const [paymentMethod, setPaymentMethod] = useState("Credit Card ending in 4242");
   const { toast } = useToast();
-  // Default user ID for demo purposes
-  const DEFAULT_USER_ID = 1;
+  const { user } = useAuth();
 
   // Prevent body scrolling when cart is open
   useEffect(() => {
@@ -179,6 +179,20 @@ const CartSidebar = () => {
                     // Create the order in the database
                     const { mockOrder, products } = generateReceiptFromCart();
                     
+                    // Check if user is authenticated
+                    if (!user) {
+                      toast({
+                        title: "Authentication Required",
+                        description: "Please log in to complete your order",
+                        variant: "destructive",
+                      });
+                      setProcessingOrder(false);
+                      setShowReceiptDialog(false);
+                      closeCart();
+                      navigate("/auth");
+                      return;
+                    }
+                    
                     // Create order with the API
                     const response = await fetch("/api/orders", {
                       method: "POST",
@@ -186,7 +200,7 @@ const CartSidebar = () => {
                         "Content-Type": "application/json",
                       },
                       body: JSON.stringify({
-                        userId: DEFAULT_USER_ID,
+                        userId: user.id,
                         orderNumber: mockOrder.orderNumber,
                         subtotal: mockOrder.subtotal,
                         shippingCost: mockOrder.shippingCost,
