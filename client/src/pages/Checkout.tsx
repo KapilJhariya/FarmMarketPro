@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { useCart } from "@/context/CartContext";
+import { useCart, CartItem } from "@/context/cart-context";
 import { 
   Form,
   FormControl,
@@ -41,7 +41,8 @@ type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 
 export default function Checkout() {
   const [, navigate] = useLocation();
-  const { cartItems, subtotal, tax, shipping, total, clearCart } = useCart();
+  const { cart, clearCart } = useCart();
+  const { items: cartItems, subtotal, shippingCost, total } = cart;
   const { toast } = useToast();
   const [processingOrder, setProcessingOrder] = useState(false);
   const { user } = useAuth();
@@ -121,8 +122,7 @@ export default function Checkout() {
         orderDate: new Date(),
         status: "Processing",
         subtotal,
-        tax,
-        shipping,
+        shippingCost: shipping,
         total,
         shippingAddress,
         paymentMethod: `Card ending in ${data.cardNumber.slice(-4)}`
@@ -138,7 +138,8 @@ export default function Checkout() {
           orderId,
           productId: item.productId,
           quantity: item.quantity,
-          price: item.price
+          price: item.price,
+          subtotal: item.price * item.quantity
         };
 
         await createOrderItemMutation.mutateAsync(orderItemData);
