@@ -24,6 +24,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          dark: "#1b5e20", // Darker shade for hover/active states
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",

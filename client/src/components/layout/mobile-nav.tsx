@@ -110,22 +110,38 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
         <nav className="p-4 overflow-y-auto h-[calc(100vh-160px)]">
           <ul className="space-y-4">
             <li>
-              <Link href="/" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg text-base">
+              <Link 
+                href="/" 
+                className={`flex items-center py-3 px-4 rounded-lg text-base ${location === '/' ? 'bg-primary text-white font-medium' : 'hover:bg-gray-100'}`}
+                onClick={onClose}
+              >
                 <span className="w-full">Home</span>
               </Link>
             </li>
             <li>
-              <Link href="/prices" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg text-base">
+              <Link 
+                href="/prices" 
+                className={`flex items-center py-3 px-4 rounded-lg text-base ${location === '/prices' ? 'bg-primary text-white font-medium' : 'hover:bg-gray-100'}`}
+                onClick={onClose}
+              >
                 <span className="w-full">Crop Prices</span>
               </Link>
             </li>
             <li>
-              <Link href="/marketplace" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg text-base">
+              <Link 
+                href="/marketplace" 
+                className={`flex items-center py-3 px-4 rounded-lg text-base ${location === '/marketplace' ? 'bg-primary text-white font-medium' : 'hover:bg-gray-100'}`}
+                onClick={onClose}
+              >
                 <span className="w-full">Marketplace</span>
               </Link>
             </li>
             <li>
-              <Link href="/rentals" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg text-base">
+              <Link 
+                href="/rentals" 
+                className={`flex items-center py-3 px-4 rounded-lg text-base ${location === '/rentals' ? 'bg-primary text-white font-medium' : 'hover:bg-gray-100'}`}
+                onClick={onClose}
+              >
                 <span className="w-full">Equipment Rentals</span>
               </Link>
             </li>
@@ -134,18 +150,30 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
               <>
                 <Separator className="my-3" />
                 <li>
-                  <Link href="/order-history" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg text-base">
+                  <Link 
+                    href="/order-history" 
+                    className={`flex items-center py-3 px-4 rounded-lg text-base font-medium ${location === '/order-history' ? 'bg-primary text-white' : 'hover:bg-gray-100'}`}
+                    onClick={onClose}
+                  >
                     <User className="h-5 w-5 mr-3" />
                     <span>My Account</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/order-history" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg pl-12 text-base">
+                  <Link 
+                    href="/order-history" 
+                    className={`flex items-center py-3 px-4 rounded-lg pl-12 text-base ${location === '/order-history' ? 'bg-primary text-white font-medium' : 'hover:bg-gray-100'}`}
+                    onClick={onClose}
+                  >
                     <span>Order History</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/rentals/history" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg pl-12 text-base">
+                  <Link 
+                    href="/rentals/history" 
+                    className={`flex items-center py-3 px-4 rounded-lg pl-12 text-base ${location === '/rentals/history' ? 'bg-primary text-white font-medium' : 'hover:bg-gray-100'}`}
+                    onClick={onClose}
+                  >
                     <span>Rental History</span>
                   </Link>
                 </li>
@@ -154,7 +182,8 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
                   <button 
                     onClick={handleLogout}
                     disabled={logoutMutation.isPending}
-                    className="flex items-center py-3 px-4 w-full text-left text-red-600 hover:bg-gray-100 rounded-lg text-base"
+                    className="flex items-center py-3 px-4 w-full text-left text-red-600 hover:bg-red-50 rounded-lg text-base font-medium"
+                    aria-label="Log out"
                   >
                     <LogOut className="h-5 w-5 mr-3" />
                     <span>{logoutMutation.isPending ? "Logging out..." : "Log out"}</span>

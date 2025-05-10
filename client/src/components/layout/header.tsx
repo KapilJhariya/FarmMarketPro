@@ -46,20 +46,20 @@ const Header = () => {
             
             {/* Desktop Navigation - Hidden on mobile */}
             <nav className="hidden md:flex items-center space-x-1 lg:space-x-5">
-              <Link href="/" className={`py-2 px-3 font-medium hover:bg-primary-dark rounded-md transition ${location === '/' ? 'bg-primary-dark' : ''}`}>
+              <Link href="/" className={`py-2 px-3 font-medium hover:bg-primary-dark rounded-md transition-colors ${location === '/' ? 'bg-primary-dark' : ''}`}>
                 Home
               </Link>
-              <Link href="/prices" className={`py-2 px-3 font-medium hover:bg-primary-dark rounded-md transition ${location === '/prices' ? 'bg-primary-dark' : ''}`}>
+              <Link href="/prices" className={`py-2 px-3 font-medium hover:bg-primary-dark rounded-md transition-colors ${location === '/prices' ? 'bg-primary-dark' : ''}`}>
                 Crop Prices
               </Link>
-              <Link href="/marketplace" className={`py-2 px-3 font-medium hover:bg-primary-dark rounded-md transition ${location === '/marketplace' ? 'bg-primary-dark' : ''}`}>
+              <Link href="/marketplace" className={`py-2 px-3 font-medium hover:bg-primary-dark rounded-md transition-colors ${location === '/marketplace' ? 'bg-primary-dark' : ''}`}>
                 Marketplace
               </Link>
-              <Link href="/rentals" className={`py-2 px-3 font-medium hover:bg-primary-dark rounded-md transition ${location === '/rentals' ? 'bg-primary-dark' : ''}`}>
+              <Link href="/rentals" className={`py-2 px-3 font-medium hover:bg-primary-dark rounded-md transition-colors ${location === '/rentals' ? 'bg-primary-dark' : ''}`}>
                 Equipment Rentals
               </Link>
               {user && (
-                <Link href="/order-history" className={`py-2 px-3 font-medium hover:bg-primary-dark rounded-md transition ${location === '/order-history' ? 'bg-primary-dark' : ''}`}>
+                <Link href="/order-history" className={`py-2 px-3 font-medium hover:bg-primary-dark rounded-md transition-colors ${location === '/order-history' ? 'bg-primary-dark' : ''}`}>
                   My Account
                 </Link>
               )}
