@@ -33,3 +33,18 @@ export function formatDate(date: string | Date): string {
     day: 'numeric'
   });
 }
+
+export function generateTicketNumber(): string {
+  return `TICK-${Date.now().toString().slice(-5)}-${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
+}
+
+export function calculateDuration(startDate: string, endDate: string): string {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  
+  // Calculate difference in days
+  const diffTime = Math.abs(end.getTime() - start.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  return diffDays === 1 ? '1 day' : `${diffDays} days`;
+}
