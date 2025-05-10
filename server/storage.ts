@@ -118,40 +118,40 @@ export class MemStorage implements IStorage {
 
   // Initialize sample data for demonstration
   private initSampleData() {
-    // Sample crops
+    // Sample crops (prices in Indian Rupees)
     const sampleCrops: InsertCrop[] = [
       {
         name: "Wheat",
         variety: "Common",
-        currentPrice: 320.45,
-        previousPrice: 308.15,
-        change: 12.30,
+        currentPrice: 24033.75, // ₹24,033.75
+        previousPrice: 23111.25, // ₹23,111.25
+        change: 922.50, // ₹922.50
         percentChange: 3.8,
         trend: "up",
         imageUrl: "https://pixabay.com/get/gd624dd32f1da5fea4cd11e809bfc2ca6df3e07a91d9615e42e6a4b45c9292c54c5339bef94658687f4afbc0cc6fe30932fc5555c8c5df656e1d68580ced90ebb_1280.jpg",
-        priceHistory: [290, 295, 300, 305, 308.15, 320.45]
+        priceHistory: [21750, 22125, 22500, 22875, 23111.25, 24033.75]
       },
       {
         name: "Corn",
         variety: "Yellow",
-        currentPrice: 185.20,
-        previousPrice: 190.85,
-        change: -5.65,
+        currentPrice: 13890, // ₹13,890
+        previousPrice: 14313.75, // ₹14,313.75
+        change: -423.75, // -₹423.75
         percentChange: -2.9,
         trend: "down",
         imageUrl: "https://images.unsplash.com/photo-1534313218094-b30d7888478c?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&h=50",
-        priceHistory: [195, 193, 192, 191, 190.85, 185.20]
+        priceHistory: [14625, 14475, 14400, 14325, 14313.75, 13890]
       },
       {
         name: "Soybeans",
         variety: "Standard",
-        currentPrice: 425.70,
-        previousPrice: 416.80,
-        change: 8.90,
+        currentPrice: 31927.50, // ₹31,927.50
+        previousPrice: 31260, // ₹31,260
+        change: 667.50, // ₹667.50
         percentChange: 2.1,
         trend: "up",
         imageUrl: "https://pixabay.com/get/g36a9fd44ef1035d0efa51c912c3e774b089fc572c97b2e0ba3db2a46ee375e180bb32ec8004315c254aadefb2151f5e1e154923bc0a7dc550b16bef6af0c01ec_1280.jpg",
-        priceHistory: [400, 405, 410, 415, 416.80, 425.70]
+        priceHistory: [30000, 30375, 30750, 31125, 31260, 31927.50]
       },
       {
         name: "Rice",
