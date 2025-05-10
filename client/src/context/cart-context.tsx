@@ -48,9 +48,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
 
   const fetchCart = async () => {
+    if (!user) {
+      // If no user, set an empty cart
+      setCart({
+        items: [],
+        subtotal: 0,
+        shippingCost: 0,
+        total: 0
+      });
+      return;
+    }
+    
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/cart/${DEFAULT_USER_ID}`);
+      const response = await fetch(`/api/cart/${user.id}`);
       if (!response.ok) throw new Error("Failed to fetch cart");
       const data = await response.json();
       setCart(data);
@@ -68,13 +79,22 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [user]); // Refetch when the user changes
 
   const addToCart = async (productId: number, quantity: number) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to add items to your cart",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsLoading(true);
     try {
       await apiRequest("POST", "/api/cart", {
-        userId: DEFAULT_USER_ID,
+        userId: user.id,
         productId,
         quantity
       });
@@ -96,6 +116,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateQuantity = async (cartItemId: number, quantity: number) => {
+    if (!user) return;
+    
     setIsLoading(true);
     try {
       await apiRequest("PUT", `/api/cart/${cartItemId}`, { quantity });
@@ -113,6 +135,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const removeItem = async (cartItemId: number) => {
+    if (!user) return;
+    
     setIsLoading(true);
     try {
       await apiRequest("DELETE", `/api/cart/${cartItemId}`);
@@ -134,9 +158,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const clearCart = async () => {
+    if (!user) return;
+    
     setIsLoading(true);
     try {
-      await apiRequest("DELETE", `/api/cart/user/${DEFAULT_USER_ID}`);
+      await apiRequest("DELETE", `/api/cart/user/${user.id}`);
       await fetchCart();
     } catch (error) {
       console.error("Error clearing cart:", error);
