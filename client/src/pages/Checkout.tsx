@@ -50,14 +50,10 @@ export default function Checkout() {
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please log in to complete your checkout",
-        variant: "destructive",
-      });
+      console.log("Authentication required");
       navigate("/auth");
     }
-  }, [user, navigate, toast]);
+  }, [user, navigate]);
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -103,11 +99,7 @@ export default function Checkout() {
 
   const onSubmit = async (data: CheckoutFormValues) => {
     if (cartItems.length === 0) {
-      toast({
-        title: "Cart is empty",
-        description: "Please add items to your cart before checkout",
-        variant: "destructive"
-      });
+      console.log("Cart is empty");
       return;
     }
 
@@ -164,41 +156,26 @@ export default function Checkout() {
             await createOrderItemMutation.mutateAsync(orderItemData);
           }
           
-          // Success! Clear cart and show success message
+          // Success! Clear cart 
           await clearCart();
-          toast({
-            title: "Order placed successfully",
-            description: "Thank you for your purchase!",
-            variant: "default"
-          });
           
-          navigate(`/orders/${orderId}`);
+          // Just say "Done" and navigate to order history
+          console.log("Done");
+          navigate('/order-history');
         } catch (itemError) {
           console.error("Failed to create order items:", itemError);
           // The order was created but items failed
-          toast({
-            title: "Order placed successfully",
-            description: "Your order was processed, but there was an issue with some items.",
-            variant: "default"
-          });
-          navigate(`/orders/${orderId}`);
+          console.log("Done with some issues");
+          navigate('/order-history');
         }
       } catch (orderError) {
         console.error("Failed to create order:", orderError);
-        toast({
-          title: "Failed to place order",
-          description: "An error occurred while processing your order. Please try again.",
-          variant: "destructive"
-        });
+        console.log("Error with order");
         setProcessingOrder(false);
       }
     } catch (error) {
       console.error("Order submission failed:", error);
-      toast({
-        title: "Failed to place order",
-        description: "An error occurred while processing your order. Please try again.",
-        variant: "destructive"
-      });
+      console.log("Order error");
       setProcessingOrder(false);
     }
   };
