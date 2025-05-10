@@ -20,6 +20,8 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { generateTicketNumber, formatCurrency, calculateDuration } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
+import { useEffect } from "react";
 
 const rentalFormSchema = z.object({
   startDate: z.string().min(1, { message: "Start date is required" }),
@@ -35,6 +37,19 @@ export default function RentalDetails() {
   const { id } = useParams<{ id: string }>();
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
+  
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to make rental requests",
+        variant: "destructive",
+      });
+      navigate("/auth");
+    }
+  }, [user, navigate, toast]);
   
   const { 
     data: equipment, 
@@ -47,9 +62,6 @@ export default function RentalDetails() {
       return res.json() as Promise<Equipment>;
     }
   });
-
-  // In a real application, we would get the user ID from authentication context
-  const userId = 1; // Using the test user ID
 
   const form = useForm<RentalFormValues>({
     resolver: zodResolver(rentalFormSchema),
@@ -102,9 +114,20 @@ export default function RentalDetails() {
       const duration = calculateDuration(startDate, endDate);
       const totalPrice = equipment.price * duration;
       
+      // Check if user is authenticated
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to make rental requests",
+          variant: "destructive",
+        });
+        navigate("/auth");
+        return;
+      }
+      
       // Create booking
       const bookingData = {
-        userId,
+        userId: user.id,
         equipmentId: parseInt(id),
         startDate,
         endDate,

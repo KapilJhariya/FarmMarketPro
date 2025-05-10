@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -41,6 +43,8 @@ const formSchema = z.object({
 const PriceAlertForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useAuth();
+  const [, navigate] = useLocation();
 
   const { data: crops, isLoading: isLoadingCrops } = useQuery({
     queryKey: ["/api/crops"],
@@ -58,8 +62,17 @@ const PriceAlertForm = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     try {
-      // For demonstration, using a static user ID
-      const userId = 1;
+      // Check if user is authenticated
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to set price alerts",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        navigate("/auth");
+        return;
+      }
       
       await fetch("/api/price-alerts", {
         method: "POST",
@@ -67,7 +80,7 @@ const PriceAlertForm = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId,
+          userId: user.id,
           cropId: parseInt(values.cropId),
           alertType: values.alertType,
           priceThreshold: parseFloat(values.priceThreshold),
