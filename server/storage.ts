@@ -123,68 +123,68 @@ export class MemStorage implements IStorage {
       {
         name: "Wheat",
         variety: "Common",
-        currentPrice: 24033.75, // ₹24,033.75
-        previousPrice: 23111.25, // ₹23,111.25
-        change: 922.50, // ₹922.50
+        currentPrice: 240.34, // ₹240.34 (reduced by factor of 1/100)
+        previousPrice: 231.11, // ₹231.11 (reduced by factor of 1/100)
+        change: 9.23, // ₹9.23 (reduced by factor of 1/100)
         percentChange: 3.8,
         trend: "up",
         imageUrl: "https://pixabay.com/get/gd624dd32f1da5fea4cd11e809bfc2ca6df3e07a91d9615e42e6a4b45c9292c54c5339bef94658687f4afbc0cc6fe30932fc5555c8c5df656e1d68580ced90ebb_1280.jpg",
-        priceHistory: [21750, 22125, 22500, 22875, 23111.25, 24033.75]
+        priceHistory: [217.50, 221.25, 225.00, 228.75, 231.11, 240.34]
       },
       {
         name: "Corn",
         variety: "Yellow",
-        currentPrice: 13890, // ₹13,890
-        previousPrice: 14313.75, // ₹14,313.75
-        change: -423.75, // -₹423.75
+        currentPrice: 138.90, // ₹138.90 (reduced by factor of 1/100)
+        previousPrice: 143.14, // ₹143.14 (reduced by factor of 1/100)
+        change: -4.24, // -₹4.24 (reduced by factor of 1/100)
         percentChange: -2.9,
         trend: "down",
         imageUrl: "https://images.unsplash.com/photo-1534313218094-b30d7888478c?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&h=50",
-        priceHistory: [14625, 14475, 14400, 14325, 14313.75, 13890]
+        priceHistory: [146.25, 144.75, 144.00, 143.25, 143.14, 138.90]
       },
       {
         name: "Soybeans",
         variety: "Standard",
-        currentPrice: 31927.50, // ₹31,927.50
-        previousPrice: 31260, // ₹31,260
-        change: 667.50, // ₹667.50
+        currentPrice: 319.28, // ₹319.28 (reduced by factor of 1/100)
+        previousPrice: 312.60, // ₹312.60 (reduced by factor of 1/100)
+        change: 6.68, // ₹6.68 (reduced by factor of 1/100)
         percentChange: 2.1,
         trend: "up",
         imageUrl: "https://pixabay.com/get/g36a9fd44ef1035d0efa51c912c3e774b089fc572c97b2e0ba3db2a46ee375e180bb32ec8004315c254aadefb2151f5e1e154923bc0a7dc550b16bef6af0c01ec_1280.jpg",
-        priceHistory: [30000, 30375, 30750, 31125, 31260, 31927.50]
+        priceHistory: [300.00, 303.75, 307.50, 311.25, 312.60, 319.28]
       },
       {
         name: "Rice",
         variety: "Long Grain",
-        currentPrice: 560.30,
-        previousPrice: 545.10,
-        change: 15.20,
+        currentPrice: 5.60, // ₹5.60 (reduced by factor of 1/100)
+        previousPrice: 5.45, // ₹5.45 (reduced by factor of 1/100)
+        change: 0.15, // ₹0.15 (reduced by factor of 1/100)
         percentChange: 2.8,
         trend: "up",
         imageUrl: "https://pixabay.com/get/gd3f1914c6ab2b7bfc21dc6657b803bd0b50d9768acfb44f94f235dd328dab2f87bb079eac58dd8b7ce6adb3976d2cd2c7dffaa89cadf255f5cbf678056ca2fde_1280.jpg",
-        priceHistory: [520, 530, 535, 540, 545.10, 560.30]
+        priceHistory: [5.20, 5.30, 5.35, 5.40, 5.45, 5.60]
       },
       {
         name: "Barley",
         variety: "Feed",
-        currentPrice: 210.75,
-        previousPrice: 205.50,
-        change: 5.25,
+        currentPrice: 2.11, // ₹2.11 (reduced by factor of 1/100)
+        previousPrice: 2.06, // ₹2.06 (reduced by factor of 1/100)
+        change: 0.05, // ₹0.05 (reduced by factor of 1/100)
         percentChange: 2.5,
         trend: "up",
         imageUrl: "https://pixabay.com/get/g0a2e1f2dc24ca6afbfec3ab47c7a14c4c1d2f07e71a08a88abf0ec9b5b323e11ac4aa4097cc5f242faf59a2e5e11a6c8a55b08e5f7beaf41bfd79c55e1ac15b9_1280.jpg",
-        priceHistory: [190, 195, 200, 205, 205.50, 210.75]
+        priceHistory: [1.90, 1.95, 2.00, 2.05, 2.06, 2.11]
       },
       {
         name: "Cotton",
         variety: "Upland",
-        currentPrice: 78.90,
-        previousPrice: 82.45,
-        change: -3.55,
+        currentPrice: 0.79, // ₹0.79 (reduced by factor of 1/100)
+        previousPrice: 0.82, // ₹0.82 (reduced by factor of 1/100)
+        change: -0.03, // -₹0.03 (reduced by factor of 1/100)
         percentChange: -4.3,
         trend: "down",
         imageUrl: "https://pixabay.com/get/g3afab27efa9d32a63d1c546ab2a301baa6f6b9dbc5df9cf4df5b89a0e42edb7e9eeee6ac56c5c9c0775e4b8eb38d7cb80fcaeff74ea2ad0c9c18ad74d3a0ecc5_1280.jpg",
-        priceHistory: [85, 84, 83, 82.45, 80, 78.90]
+        priceHistory: [0.85, 0.84, 0.83, 0.82, 0.80, 0.79]
       }
     ];
 
@@ -193,7 +193,7 @@ export class MemStorage implements IStorage {
       {
         name: "Premium Organic Fertilizer",
         description: "High-quality organic fertilizer for all crops",
-        price: 3449.25, // ₹3,449.25 (converted from $45.99)
+        price: 34.49, // ₹34.49 (reduced by factor of 1/100)
         category: "Fertilizers",
         imageUrl: "https://pixabay.com/get/g339f989526ef7457dcfe5b8989e59cacf082420bf04ec1ad124e4ff9c720abcc19d3efdba80cf118159838c212f56ece96dbeb27a0dce2985cf6b143d092f12e_1280.jpg",
         unit: "25kg Bag",
@@ -203,7 +203,7 @@ export class MemStorage implements IStorage {
       {
         name: "Garden Tool Set",
         description: "Complete set of garden tools for all your farming needs",
-        price: 6746.25, // ₹6,746.25 (converted from $89.95)
+        price: 67.46, // ₹67.46 (reduced by factor of 1/100)
         category: "Tools",
         imageUrl: "https://images.unsplash.com/photo-1582131503261-fca1d1c0589f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
         unit: "5-Piece Set",
@@ -213,7 +213,7 @@ export class MemStorage implements IStorage {
       {
         name: "Heirloom Vegetable Seeds",
         description: "Collection of heirloom vegetable seeds for diverse planting",
-        price: 1837.50, // ₹1,837.50 (converted from $24.50)
+        price: 18.38, // ₹18.38 (reduced by factor of 1/100)
         category: "Seeds",
         imageUrl: "https://pixabay.com/get/g4dfcba4e620a948c283c0f5ecb12938a6dd258cc41f640f7e4faeb85479f30bccfb93072f9f97c5c1d0111751d12f0c081aeed2892d21acfcf8f69406bcb39f1_1280.jpg",
         unit: "20 Variety Pack",
@@ -223,7 +223,7 @@ export class MemStorage implements IStorage {
       {
         name: "Organic Pest Control",
         description: "Natural pest control solution safe for organic farming",
-        price: 2681.25, // ₹2,681.25 (converted from $35.75) 
+        price: 26.81, // ₹26.81 (reduced by factor of 1/100)
         category: "Pesticides",
         imageUrl: "https://pixabay.com/get/ga2f1f794ea119827f3789c9ef07b1f4df764db10d4870364c6dbc39ad995cdc14964f17cb6e91691a2effb0657ccc8c9496280e8fee1e902d4f2783005cf1cee_1280.jpg",
         unit: "1L Concentrate",
@@ -233,7 +233,7 @@ export class MemStorage implements IStorage {
       {
         name: "Heavy-Duty Garden Hose",
         description: "Durable, kink-resistant garden hose for farm irrigation",
-        price: 5099.25, // ₹5,099.25 (converted from $67.99)
+        price: 50.99, // ₹50.99 (reduced by factor of 1/100)
         category: "Tools",
         imageUrl: "https://pixabay.com/get/gacede183ce2aba93aec4e97fb5d3ace6fb33c62c0aa06e86d60b5e54cefd08be5a8db5fb78c055eb97afaf7f5e83b81b55f7f3c4c2eca6a89c2b7eb59aeec01a_1280.jpg",
         unit: "30m Length",
@@ -243,7 +243,7 @@ export class MemStorage implements IStorage {
       {
         name: "Soil pH Testing Kit",
         description: "Professional soil pH testing kit for optimal crop management",
-        price: 2246.25, // ₹2,246.25 (converted from $29.95)
+        price: 22.46, // ₹22.46 (reduced by factor of 1/100)
         category: "Tools",
         imageUrl: "https://pixabay.com/get/ga8c7cc2cb17fdfeaa6fe7a83a5b5e5b9d65e0cc25baef9de2b6a2fa835b5b7d0b1b9a2ef4b16a2db7e4d05cad2e8a0fdfaa8e3c5f0aad1af84c4acd25f6c0c1e_1280.jpg",
         unit: "Complete Kit",
