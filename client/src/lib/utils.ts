@@ -7,7 +7,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatCurrency(amount: number): string {
   // Convert to Indian Rupees (assuming current conversion rate of ~75 INR per USD)
-  const inrAmount = amount * 75;
+  // Then reduce by factor of 1/100 as requested
+  const inrAmount = (amount * 75) / 100;
   
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
