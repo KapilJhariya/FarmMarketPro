@@ -138,7 +138,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       });
       
-      const shippingCost = subtotal > 0 ? 12.50 : 0;
+      const shippingCost = subtotal > 0 ? 937.50 : 0; // ₹937.50 (converted from $12.50)
       const total = subtotal + shippingCost;
       
       res.json({
