@@ -1,14 +1,34 @@
-import { 
-  users, type User, type InsertUser,
-  crops, type Crop, type InsertCrop,
-  products, type Product, type InsertProduct,
-  orders, type Order, type InsertOrder,
-  orderItems, type OrderItem, type InsertOrderItem,
-  equipment, type Equipment, type InsertEquipment,
-  labor, type Labor, type InsertLabor,
-  rentalRequests, type RentalRequest, type InsertRentalRequest,
-  priceAlerts, type PriceAlert, type InsertPriceAlert,
-  cartItems, type CartItem, type InsertCartItem
+import {
+  users,
+  type User,
+  type InsertUser,
+  crops,
+  type Crop,
+  type InsertCrop,
+  products,
+  type Product,
+  type InsertProduct,
+  orders,
+  type Order,
+  type InsertOrder,
+  orderItems,
+  type OrderItem,
+  type InsertOrderItem,
+  equipment,
+  type Equipment,
+  type InsertEquipment,
+  labor,
+  type Labor,
+  type InsertLabor,
+  rentalRequests,
+  type RentalRequest,
+  type InsertRentalRequest,
+  priceAlerts,
+  type PriceAlert,
+  type InsertPriceAlert,
+  cartItems,
+  type CartItem,
+  type InsertCartItem,
 } from "@shared/schema";
 
 // Interface for all storage operations
@@ -22,42 +42,44 @@ export interface IStorage {
   getAllCrops(): Promise<Crop[]>;
   getCrop(id: number): Promise<Crop | undefined>;
   updateCrop(crop: Crop): Promise<Crop>;
-  
+
   // Product operations
   getAllProducts(): Promise<Product[]>;
   getProductsByCategory(category: string): Promise<Product[]>;
   getProduct(id: number): Promise<Product | undefined>;
-  
+
   // Order operations
   createOrder(order: InsertOrder): Promise<Order>;
   getOrdersByUser(userId: number): Promise<Order[]>;
   getOrder(id: number): Promise<Order | undefined>;
   getOrderByNumber(orderNumber: string): Promise<Order | undefined>;
   deleteOrder(id: number): Promise<boolean>;
-  
+
   // Order Item operations
   addOrderItem(orderItem: InsertOrderItem): Promise<OrderItem>;
   getOrderItems(orderId: number): Promise<OrderItem[]>;
-  
+
   // Equipment operations
   getAllEquipment(): Promise<Equipment[]>;
   getEquipment(id: number): Promise<Equipment | undefined>;
-  
+
   // Labor operations
   getAllLabor(): Promise<Labor[]>;
   getLabor(id: number): Promise<Labor | undefined>;
-  
+
   // Rental Request operations
   createRentalRequest(request: InsertRentalRequest): Promise<RentalRequest>;
   getRentalRequestsByUser(userId: number): Promise<RentalRequest[]>;
   deleteRentalRequest(id: number): Promise<boolean>;
-  
+
   // Price Alert operations
   createPriceAlert(alert: InsertPriceAlert): Promise<PriceAlert>;
   getPriceAlertsByUser(userId: number): Promise<PriceAlert[]>;
-  
+
   // Cart operations
-  getCartItems(userId: number): Promise<{ cartItem: CartItem; product: Product }[]>;
+  getCartItems(
+    userId: number,
+  ): Promise<{ cartItem: CartItem; product: Product }[]>;
   addToCart(cartItem: InsertCartItem): Promise<CartItem>;
   updateCartItem(id: number, quantity: number): Promise<CartItem | undefined>;
   removeFromCart(id: number): Promise<boolean>;
@@ -128,8 +150,9 @@ export class MemStorage implements IStorage {
         change: 900, // ₹900
         percentChange: 3.8,
         trend: "up",
-        imageUrl: "https://pixabay.com/get/gd624dd32f1da5fea4cd11e809bfc2ca6df3e07a91d9615e42e6a4b45c9292c54c5339bef94658687f4afbc0cc6fe30932fc5555c8c5df656e1d68580ced90ebb_1280.jpg",
-        priceHistory: [22000, 22500, 23000, 23500, 23900, 24800]
+        imageUrl:
+          "https://pixabay.com/get/gd624dd32f1da5fea4cd11e809bfc2ca6df3e07a91d9615e42e6a4b45c9292c54c5339bef94658687f4afbc0cc6fe30932fc5555c8c5df656e1d68580ced90ebb_1280.jpg",
+        priceHistory: [22000, 22500, 23000, 23500, 23900, 24800],
       },
       {
         name: "Corn",
@@ -139,8 +162,9 @@ export class MemStorage implements IStorage {
         change: -690, // -₹690
         percentChange: -2.9,
         trend: "down",
-        imageUrl: "https://images.unsplash.com/photo-1534313218094-b30d7888478c?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&h=50",
-        priceHistory: [24000, 23500, 23100, 22800, 22600, 21910]
+        imageUrl:
+          "https://images.unsplash.com/photo-1534313218094-b30d7888478c?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&h=50",
+        priceHistory: [24000, 23500, 23100, 22800, 22600, 21910],
       },
       {
         name: "Soybeans",
@@ -150,8 +174,9 @@ export class MemStorage implements IStorage {
         change: 850, // ₹850
         percentChange: 2.1,
         trend: "up",
-        imageUrl: "https://pixabay.com/get/g36a9fd44ef1035d0efa51c912c3e774b089fc572c97b2e0ba3db2a46ee375e180bb32ec8004315c254aadefb2151f5e1e154923bc0a7dc550b16bef6af0c01ec_1280.jpg",
-        priceHistory: [39000, 39800, 40500, 41000, 41150, 42000]
+        imageUrl:
+          "https://pixabay.com/get/g36a9fd44ef1035d0efa51c912c3e774b089fc572c97b2e0ba3db2a46ee375e180bb32ec8004315c254aadefb2151f5e1e154923bc0a7dc550b16bef6af0c01ec_1280.jpg",
+        priceHistory: [39000, 39800, 40500, 41000, 41150, 42000],
       },
       {
         name: "Rice",
@@ -161,8 +186,9 @@ export class MemStorage implements IStorage {
         change: 915, // ₹915
         percentChange: 2.8,
         trend: "up",
-        imageUrl: "https://pixabay.com/get/gd3f1914c6ab2b7bfc21dc6657b803bd0b50d9768acfb44f94f235dd328dab2f87bb079eac58dd8b7ce6adb3976d2cd2c7dffaa89cadf255f5cbf678056ca2fde_1280.jpg",
-        priceHistory: [30800, 31200, 31700, 32000, 32300, 33215]
+        imageUrl:
+          "https://pixabay.com/get/gd3f1914c6ab2b7bfc21dc6657b803bd0b50d9768acfb44f94f235dd328dab2f87bb079eac58dd8b7ce6adb3976d2cd2c7dffaa89cadf255f5cbf678056ca2fde_1280.jpg",
+        priceHistory: [30800, 31200, 31700, 32000, 32300, 33215],
       },
       {
         name: "Barley",
@@ -172,8 +198,9 @@ export class MemStorage implements IStorage {
         change: 160, // ₹160
         percentChange: 2.5,
         trend: "up",
-        imageUrl: "https://pixabay.com/get/g0a2e1f2dc24ca6afbfec3ab47c7a14c4c1d2f07e71a08a88abf0ec9b5b323e11ac4aa4097cc5f242faf59a2e5e11a6c8a55b08e5f7beaf41bfd79c55e1ac15b9_1280.jpg",
-        priceHistory: [6000, 6100, 6200, 6300, 6340, 6500]
+        imageUrl:
+          "https://pixabay.com/get/g0a2e1f2dc24ca6afbfec3ab47c7a14c4c1d2f07e71a08a88abf0ec9b5b323e11ac4aa4097cc5f242faf59a2e5e11a6c8a55b08e5f7beaf41bfd79c55e1ac15b9_1280.jpg",
+        priceHistory: [6000, 6100, 6200, 6300, 6340, 6500],
       },
       {
         name: "Cotton",
@@ -183,9 +210,10 @@ export class MemStorage implements IStorage {
         change: -2870, // -₹2,870
         percentChange: -4.3,
         trend: "down",
-        imageUrl: "https://pixabay.com/get/g3afab27efa9d32a63d1c546ab2a301baa6f6b9dbc5df9cf4df5b89a0e42edb7e9eeee6ac56c5c9c0775e4b8eb38d7cb80fcaeff74ea2ad0c9c18ad74d3a0ecc5_1280.jpg",
-        priceHistory: [68500, 68000, 67500, 66550, 65000, 63680]
-      }
+        imageUrl:
+          "https://pixabay.com/get/g3afab27efa9d32a63d1c546ab2a301baa6f6b9dbc5df9cf4df5b89a0e42edb7e9eeee6ac56c5c9c0775e4b8eb38d7cb80fcaeff74ea2ad0c9c18ad74d3a0ecc5_1280.jpg",
+        priceHistory: [68500, 68000, 67500, 66550, 65000, 63680],
+      },
     ];
 
     // Sample products (prices in Indian Rupees)
@@ -193,63 +221,71 @@ export class MemStorage implements IStorage {
       {
         name: "Premium Organic Fertilizer",
         description: "High-quality organic fertilizer for all crops",
-        price: 34.49, // ₹34.49 (reduced by factor of 1/100)
+        price: 11000, // ₹11,000
         category: "Fertilizers",
-        imageUrl: "https://pixabay.com/get/g339f989526ef7457dcfe5b8989e59cacf082420bf04ec1ad124e4ff9c720abcc19d3efdba80cf118159838c212f56ece96dbeb27a0dce2985cf6b143d092f12e_1280.jpg",
+        imageUrl:
+          "https://pixabay.com/get/g339f989526ef7457dcfe5b8989e59cacf082420bf04ec1ad124e4ff9c720abcc19d3efdba80cf118159838c212f56ece96dbeb27a0dce2985cf6b143d092f12e_1280.jpg",
         unit: "25kg Bag",
         inStock: true,
-        tags: ["Organic", "Premium"]
+        tags: ["Organic", "Premium"],
       },
       {
         name: "Garden Tool Set",
         description: "Complete set of garden tools for all your farming needs",
-        price: 67.46, // ₹67.46 (reduced by factor of 1/100)
+        price: 1300, // ₹1,300
         category: "Tools",
-        imageUrl: "https://images.unsplash.com/photo-1582131503261-fca1d1c0589f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+        imageUrl:
+          "https://images.unsplash.com/photo-1582131503261-fca1d1c0589f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
         unit: "5-Piece Set",
         inStock: true,
-        tags: ["Best Seller", "Durable"]
+        tags: ["Best Seller", "Durable"],
       },
       {
         name: "Heirloom Vegetable Seeds",
-        description: "Collection of heirloom vegetable seeds for diverse planting",
-        price: 18.38, // ₹18.38 (reduced by factor of 1/100)
+        description:
+          "Collection of heirloom vegetable seeds for diverse planting",
+        price: 300, // ₹300
         category: "Seeds",
-        imageUrl: "https://pixabay.com/get/g4dfcba4e620a948c283c0f5ecb12938a6dd258cc41f640f7e4faeb85479f30bccfb93072f9f97c5c1d0111751d12f0c081aeed2892d21acfcf8f69406bcb39f1_1280.jpg",
+        imageUrl:
+          "https://pixabay.com/get/g4dfcba4e620a948c283c0f5ecb12938a6dd258cc41f640f7e4faeb85479f30bccfb93072f9f97c5c1d0111751d12f0c081aeed2892d21acfcf8f69406bcb39f1_1280.jpg",
         unit: "20 Variety Pack",
         inStock: true,
-        tags: ["Non-GMO", "Heirloom"]
+        tags: ["Non-GMO", "Heirloom"],
       },
       {
         name: "Organic Pest Control",
         description: "Natural pest control solution safe for organic farming",
-        price: 26.81, // ₹26.81 (reduced by factor of 1/100)
+        price: 690, // ₹690
         category: "Pesticides",
-        imageUrl: "https://pixabay.com/get/ga2f1f794ea119827f3789c9ef07b1f4df764db10d4870364c6dbc39ad995cdc14964f17cb6e91691a2effb0657ccc8c9496280e8fee1e902d4f2783005cf1cee_1280.jpg",
+        imageUrl:
+          "https://pixabay.com/get/ga2f1f794ea119827f3789c9ef07b1f4df764db10d4870364c6dbc39ad995cdc14964f17cb6e91691a2effb0657ccc8c9496280e8fee1e902d4f2783005cf1cee_1280.jpg",
         unit: "1L Concentrate",
         inStock: true,
-        tags: ["Eco-Friendly", "Organic"]
+        tags: ["Eco-Friendly", "Organic"],
       },
       {
         name: "Heavy-Duty Garden Hose",
         description: "Durable, kink-resistant garden hose for farm irrigation",
-        price: 50.99, // ₹50.99 (reduced by factor of 1/100)
+        price: 2100, // ₹2,100
         category: "Tools",
-        imageUrl: "https://pixabay.com/get/gacede183ce2aba93aec4e97fb5d3ace6fb33c62c0aa06e86d60b5e54cefd08be5a8db5fb78c055eb97afaf7f5e83b81b55f7f3c4c2eca6a89c2b7eb59aeec01a_1280.jpg",
+        imageUrl:
+          "https://pixabay.com/get/gacede183ce2aba93aec4e97fb5d3ace6fb33c62c0aa06e86d60b5e54cefd08be5a8db5fb78c055eb97afaf7f5e83b81b55f7f3c4c2eca6a89c2b7eb59aeec01a_1280.jpg",
         unit: "30m Length",
         inStock: true,
-        tags: ["Durable", "Heavy-Duty"]
+        tags: ["Durable", "Heavy-Duty"],
       },
       {
         name: "Soil pH Testing Kit",
-        description: "Professional soil pH testing kit for optimal crop management",
-        price: 22.46, // ₹22.46 (reduced by factor of 1/100)
+        description:
+          "Professional soil pH testing kit for optimal crop management",
+        price: 525, // ₹525
         category: "Tools",
-        imageUrl: "https://pixabay.com/get/ga8c7cc2cb17fdfeaa6fe7a83a5b5e5b9d65e0cc25baef9de2b6a2fa835b5b7d0b1b9a2ef4b16a2db7e4d05cad2e8a0fdfaa8e3c5f0aad1af84c4acd25f6c0c1e_1280.jpg",
+        imageUrl:
+          "https://pixabay.com/get/ga8c7cc2cb17fdfeaa6fe7a83a5b5e5b9d65e0cc25baef9de2b6a2fa835b5b7d0b1b9a2ef4b16a2db7e4d05cad2e8a0fdfaa8e3c5f0aad1af84c4acd25f6c0c1e_1280.jpg",
         unit: "Complete Kit",
         inStock: true,
-        tags: ["Professional", "Essential"]
-      }
+        tags: ["Professional", "Essential"],
+      },
     ];
 
     // Sample equipment (rates in Indian Rupees)
@@ -258,77 +294,92 @@ export class MemStorage implements IStorage {
         name: "John Deere Tractor",
         model: "6120M, 120 HP",
         description: "Versatile tractor suitable for various farm operations",
-        imageUrl: "https://pixabay.com/get/g440f6ef9c6af140cb22b6042bb50438021f289b481dbca852577c74c4abb008b64c36a5c8ce4380ea9bd86d4cd88a6e8e60c04430fbba77f2fdfe2a1b12abded_1280.jpg",
+        imageUrl:
+          "https://pixabay.com/get/g440f6ef9c6af140cb22b6042bb50438021f289b481dbca852577c74c4abb008b64c36a5c8ce4380ea9bd86d4cd88a6e8e60c04430fbba77f2fdfe2a1b12abded_1280.jpg",
         availableUnits: 3,
-        dailyRate: 262.50, // ₹262.50 (reduced by factor of 1/100)
-        weeklyRate: 1125.00, // ₹1,125.00 (reduced by factor of 1/100)
-        category: "Tractor"
+        dailyRate: 456.0, // ₹456/day
+        weeklyRate: 2800.0, // ₹2,800/week
+        category: "Tractor",
       },
       {
         name: "Combine Harvester",
         model: "Case IH 7150, 350 HP",
-        description: "High-performance combine harvester for efficient grain harvesting",
-        imageUrl: "https://images.unsplash.com/photo-1592982537447-7440770cbfc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
+        description:
+          "High-performance combine harvester for efficient grain harvesting",
+        imageUrl:
+          "https://images.unsplash.com/photo-1592982537447-7440770cbfc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
         availableUnits: 1,
-        dailyRate: 562.50, // ₹562.50 (reduced by factor of 1/100)
-        weeklyRate: 2400.00, // ₹2,400.00 (reduced by factor of 1/100)
-        category: "Harvester"
+        dailyRate: 5625.0, // ₹562.50 (reduced by factor of 1/100)
+        weeklyRate: 2400.0, // ₹2,400.00 (reduced by factor of 1/100)
+        category: "Harvester",
       },
       {
         name: "Seed Drill",
         model: "Amazone D9-30",
         description: "Precision seed drill for consistent seed placement",
-        imageUrl: "https://pixabay.com/get/g3a17f33b5afbd7ce6536de3fbca77f22307bb02097df3a14bba76adeb3bb3f38fd75e3607b80ec1f25c0b5b5d94e7664dc0f8da5d0a9ca7abe6f3ede3e9e5c8d_1280.jpg",
+        imageUrl:
+          "https://pixabay.com/get/g3a17f33b5afbd7ce6536de3fbca77f22307bb02097df3a14bba76adeb3bb3f38fd75e3607b80ec1f25c0b5b5d94e7664dc0f8da5d0a9ca7abe6f3ede3e9e5c8d_1280.jpg",
         availableUnits: 2,
-        dailyRate: 187.50, // ₹187.50 (reduced by factor of 1/100)
-        weeklyRate: 900.00, // ₹900.00 (reduced by factor of 1/100)
-        category: "Seeder"
+        dailyRate: 1875.0, // ₹187.50 (reduced by factor of 1/100)
+        weeklyRate: 900.0, // ₹900.00 (reduced by factor of 1/100)
+        category: "Seeder",
       },
       {
         name: "Irrigation System",
         model: "Valley Center Pivot",
         description: "Efficient irrigation system for large fields",
-        imageUrl: "https://pixabay.com/get/gd0e2c9f3a839e6f18d3b42f2bab10d79a0f4e3dc9b16cdcd9db0ddd0e28f0eb87b9c4b25c7095ba48cd35a0baf4a1efe84f453b11fe13e9c22654e90d21f8d44_1280.jpg",
+        imageUrl:
+          "https://pixabay.com/get/gd0e2c9f3a839e6f18d3b42f2bab10d79a0f4e3dc9b16cdcd9db0ddd0e28f0eb87b9c4b25c7095ba48cd35a0baf4a1efe84f453b11fe13e9c22654e90d21f8d44_1280.jpg",
         availableUnits: 2,
-        dailyRate: 150.00, // ₹150.00 (reduced by factor of 1/100)
-        weeklyRate: 750.00, // ₹750.00 (reduced by factor of 1/100)
-        category: "Irrigation"
-      }
+        dailyRate: 1500.0, // ₹150.00 (reduced by factor of 1/100)
+        weeklyRate: 750.0, // ₹750.00 (reduced by factor of 1/100)
+        category: "Irrigation",
+      },
     ];
 
     // Sample labor (rates in Indian Rupees)
     const sampleLabor: InsertLabor[] = [
       {
         title: "Seasonal Farm Workers",
-        description: "Team of 5-10 experienced workers for harvesting and planting",
-        imageUrl: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
-        hourlyRate: 11.25, // ₹11.25 (reduced by factor of 1/100)
+        description:
+          "Team of 5-10 experienced workers for harvesting and planting",
+        imageUrl:
+          "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
+        hourlyRate: 70, // ₹70/hr
         availability: "Immediate",
-        skills: ["Harvesting", "Planting", "General Farm Work"]
+        skills: ["Harvesting", "Planting", "General Farm Work"],
       },
       {
         title: "Equipment Operator",
-        description: "Skilled operator for tractors, harvesters and other farm equipment",
-        imageUrl: "https://images.unsplash.com/photo-1540479859555-17af45c78602?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
-        hourlyRate: 18.75, // ₹18.75 (reduced by factor of 1/100)
+        description:
+          "Skilled operator for tractors, harvesters and other farm equipment",
+        imageUrl:
+          "https://images.unsplash.com/photo-1540479859555-17af45c78602?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200",
+        hourlyRate: 49, // ₹49/hr
         availability: "From 08/15",
-        skills: ["Tractor Operation", "Harvester Operation", "Equipment Maintenance"]
+        skills: [
+          "Tractor Operation",
+          "Harvester Operation",
+          "Equipment Maintenance",
+        ],
       },
       {
         title: "Agricultural Technician",
-        description: "Experienced technician for equipment setup and maintenance",
-        imageUrl: "https://pixabay.com/get/g61ac3f90cc59d8d02f512a08a65f0fd40d9aa5e5db1d8ce45f6e75a46e99ac7af1b27f6f2bc9c1ebebf1ee4cf9ab76adb399e1ae1c18f12cb92c5a3f8cee9775_1280.jpg",
-        hourlyRate: 22.50, // ₹22.50 (reduced by factor of 1/100)
+        description:
+          "Experienced technician for equipment setup and maintenance",
+        imageUrl:
+          "https://pixabay.com/get/g61ac3f90cc59d8d02f512a08a65f0fd40d9aa5e5db1d8ce45f6e75a46e99ac7af1b27f6f2bc9c1ebebf1ee4cf9ab76adb399e1ae1c18f12cb92c5a3f8cee9775_1280.jpg",
+        hourlyRate: 100, // ₹100/hr
         availability: "Weekends Only",
-        skills: ["Equipment Repair", "Machinery Setup", "Technical Support"]
-      }
+        skills: ["Equipment Repair", "Machinery Setup", "Technical Support"],
+      },
     ];
 
     // Add sample data to storage
-    sampleCrops.forEach(crop => this.addCrop(crop));
-    sampleProducts.forEach(product => this.addProduct(product));
-    sampleEquipment.forEach(equip => this.addEquipment(equip));
-    sampleLabor.forEach(lab => this.addLabor(lab));
+    sampleCrops.forEach((crop) => this.addCrop(crop));
+    sampleProducts.forEach((product) => this.addProduct(product));
+    sampleEquipment.forEach((equip) => this.addEquipment(equip));
+    sampleLabor.forEach((lab) => this.addLabor(lab));
   }
 
   // User operations
@@ -386,7 +437,7 @@ export class MemStorage implements IStorage {
 
   async getProductsByCategory(category: string): Promise<Product[]> {
     return Array.from(this.products.values()).filter(
-      (product) => product.category === category
+      (product) => product.category === category,
     );
   }
 
@@ -405,7 +456,7 @@ export class MemStorage implements IStorage {
 
   async getOrdersByUser(userId: number): Promise<Order[]> {
     return Array.from(this.orders.values()).filter(
-      (order) => order.userId === userId
+      (order) => order.userId === userId,
     );
   }
 
@@ -415,23 +466,23 @@ export class MemStorage implements IStorage {
 
   async getOrderByNumber(orderNumber: string): Promise<Order | undefined> {
     return Array.from(this.orders.values()).find(
-      (order) => order.orderNumber === orderNumber
+      (order) => order.orderNumber === orderNumber,
     );
   }
-  
+
   async deleteOrder(id: number): Promise<boolean> {
     // First check if the order exists
     const order = this.orders.get(id);
     if (!order) {
       return false;
     }
-    
+
     // Delete the order items related to this order
     const orderItems = await this.getOrderItems(id);
     for (const item of orderItems) {
       this.orderItems.delete(item.id);
     }
-    
+
     // Finally delete the order
     return this.orders.delete(id);
   }
@@ -446,12 +497,14 @@ export class MemStorage implements IStorage {
 
   async getOrderItems(orderId: number): Promise<OrderItem[]> {
     return Array.from(this.orderItems.values()).filter(
-      (item) => item.orderId === orderId
+      (item) => item.orderId === orderId,
     );
   }
 
   // Equipment operations
-  private async addEquipment(insertEquipment: InsertEquipment): Promise<Equipment> {
+  private async addEquipment(
+    insertEquipment: InsertEquipment,
+  ): Promise<Equipment> {
     const id = this.currentEquipmentId++;
     const equipment: Equipment = { ...insertEquipment, id };
     this.equipment.set(id, equipment);
@@ -483,17 +536,21 @@ export class MemStorage implements IStorage {
   }
 
   // Rental Request operations
-  async createRentalRequest(insertRequest: InsertRentalRequest): Promise<RentalRequest> {
+  async createRentalRequest(
+    insertRequest: InsertRentalRequest,
+  ): Promise<RentalRequest> {
     const id = this.currentRentalRequestId++;
     const now = new Date();
     // Use provided ticket number or generate a new one
-    const ticketNumber = insertRequest.ticketNumber || `RT-${Date.now().toString().slice(-6)}-${id}`;
-    const request: RentalRequest = { 
-      ...insertRequest, 
-      id, 
-      status: 'Pending', 
-      ticketNumber, 
-      createdAt: now 
+    const ticketNumber =
+      insertRequest.ticketNumber ||
+      `RT-${Date.now().toString().slice(-6)}-${id}`;
+    const request: RentalRequest = {
+      ...insertRequest,
+      id,
+      status: "Pending",
+      ticketNumber,
+      createdAt: now,
     };
     this.rentalRequests.set(id, request);
     return request;
@@ -501,17 +558,17 @@ export class MemStorage implements IStorage {
 
   async getRentalRequestsByUser(userId: number): Promise<RentalRequest[]> {
     return Array.from(this.rentalRequests.values()).filter(
-      (request) => request.userId === userId
+      (request) => request.userId === userId,
     );
   }
-  
+
   async deleteRentalRequest(id: number): Promise<boolean> {
     // Check if the rental request exists
     const request = this.rentalRequests.get(id);
     if (!request) {
       return false;
     }
-    
+
     // Delete the rental request
     return this.rentalRequests.delete(id);
   }
@@ -520,11 +577,11 @@ export class MemStorage implements IStorage {
   async createPriceAlert(insertAlert: InsertPriceAlert): Promise<PriceAlert> {
     const id = this.currentPriceAlertId++;
     const now = new Date();
-    const alert: PriceAlert = { 
-      ...insertAlert, 
-      id, 
-      isActive: true, 
-      createdAt: now 
+    const alert: PriceAlert = {
+      ...insertAlert,
+      id,
+      isActive: true,
+      createdAt: now,
     };
     this.priceAlerts.set(id, alert);
     return alert;
@@ -532,16 +589,18 @@ export class MemStorage implements IStorage {
 
   async getPriceAlertsByUser(userId: number): Promise<PriceAlert[]> {
     return Array.from(this.priceAlerts.values()).filter(
-      (alert) => alert.userId === userId
+      (alert) => alert.userId === userId,
     );
   }
 
   // Cart operations
-  async getCartItems(userId: number): Promise<{ cartItem: CartItem; product: Product }[]> {
+  async getCartItems(
+    userId: number,
+  ): Promise<{ cartItem: CartItem; product: Product }[]> {
     const userCartItems = Array.from(this.cartItems.values()).filter(
-      (item) => item.userId === userId
+      (item) => item.userId === userId,
     );
-    
+
     return Promise.all(
       userCartItems.map(async (cartItem) => {
         const product = await this.getProduct(cartItem.productId);
@@ -549,19 +608,24 @@ export class MemStorage implements IStorage {
           throw new Error(`Product with ID ${cartItem.productId} not found`);
         }
         return { cartItem, product };
-      })
+      }),
     );
   }
 
   async addToCart(insertCartItem: InsertCartItem): Promise<CartItem> {
     // Check if this product is already in the cart
     const existingItem = Array.from(this.cartItems.values()).find(
-      (item) => item.userId === insertCartItem.userId && item.productId === insertCartItem.productId
+      (item) =>
+        item.userId === insertCartItem.userId &&
+        item.productId === insertCartItem.productId,
     );
 
     if (existingItem) {
       // Update the quantity instead of adding a new item
-      return this.updateCartItem(existingItem.id, existingItem.quantity + insertCartItem.quantity) as Promise<CartItem>;
+      return this.updateCartItem(
+        existingItem.id,
+        existingItem.quantity + insertCartItem.quantity,
+      ) as Promise<CartItem>;
     }
 
     // Add new item to cart
@@ -572,7 +636,10 @@ export class MemStorage implements IStorage {
     return cartItem;
   }
 
-  async updateCartItem(id: number, quantity: number): Promise<CartItem | undefined> {
+  async updateCartItem(
+    id: number,
+    quantity: number,
+  ): Promise<CartItem | undefined> {
     const cartItem = this.cartItems.get(id);
     if (!cartItem) {
       return undefined;
@@ -589,7 +656,7 @@ export class MemStorage implements IStorage {
 
   async clearCart(userId: number): Promise<boolean> {
     const userCartItems = Array.from(this.cartItems.values()).filter(
-      (item) => item.userId === userId
+      (item) => item.userId === userId,
     );
 
     userCartItems.forEach((item) => {
