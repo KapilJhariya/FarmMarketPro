@@ -1,9 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-
-// Default user ID for demo purposes
-const DEFAULT_USER_ID = 1;
+import { useAuth } from "@/hooks/use-auth";
 
 export interface CartItem {
   id: number;
@@ -39,6 +37,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [cart, setCart] = useState<CartSummary>({
     items: [],
     subtotal: 0,
