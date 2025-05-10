@@ -56,25 +56,25 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
     onClose();
   };
 
-  if (!isOpen) return null;
+  // Animation is now handled with CSS transforms
 
   return (
     <>
       {/* Overlay */}
       <div 
-        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={onClose}
       />
 
       {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-50 transform transition-transform duration-300">
-        <div className="p-4 border-b">
+      <div className={`fixed inset-y-0 left-0 w-4/5 max-w-xs bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="sticky top-0 bg-white p-4 border-b">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-2">
               <Recycle className="h-5 w-5 text-primary" />
               <span className="font-bold text-lg text-primary">AgriManage</span>
             </div>
-            <Button variant="ghost" size="icon" onClick={onClose}>
+            <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close menu">
               <X className="h-5 w-5" />
             </Button>
           </div>
@@ -107,56 +107,56 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
           </div>
         )}
         
-        <nav className="p-4">
-          <ul className="space-y-3">
+        <nav className="p-4 overflow-y-auto h-[calc(100vh-160px)]">
+          <ul className="space-y-4">
             <li>
-              <Link href="/" className="block py-2 px-4 hover:bg-gray-100 rounded-lg">
-                Home
+              <Link href="/" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg text-base">
+                <span className="w-full">Home</span>
               </Link>
             </li>
             <li>
-              <Link href="/prices" className="block py-2 px-4 hover:bg-gray-100 rounded-lg">
-                Crop Prices
+              <Link href="/prices" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg text-base">
+                <span className="w-full">Crop Prices</span>
               </Link>
             </li>
             <li>
-              <Link href="/marketplace" className="block py-2 px-4 hover:bg-gray-100 rounded-lg">
-                Marketplace
+              <Link href="/marketplace" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg text-base">
+                <span className="w-full">Marketplace</span>
               </Link>
             </li>
             <li>
-              <Link href="/rentals" className="block py-2 px-4 hover:bg-gray-100 rounded-lg">
-                Equipment Rentals
+              <Link href="/rentals" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg text-base">
+                <span className="w-full">Equipment Rentals</span>
               </Link>
             </li>
             
             {user && (
               <>
-                <Separator className="my-2" />
+                <Separator className="my-3" />
                 <li>
-                  <Link href="/order-history" className="flex items-center py-2 px-4 hover:bg-gray-100 rounded-lg">
-                    <User className="h-4 w-4 mr-2" />
+                  <Link href="/order-history" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg text-base">
+                    <User className="h-5 w-5 mr-3" />
                     <span>My Account</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/order-history" className="block py-2 px-4 hover:bg-gray-100 rounded-lg pl-10">
-                    Order History
+                  <Link href="/order-history" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg pl-12 text-base">
+                    <span>Order History</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/rentals/history" className="block py-2 px-4 hover:bg-gray-100 rounded-lg pl-10">
-                    Rental History
+                  <Link href="/rentals/history" className="flex items-center py-3 px-4 hover:bg-gray-100 rounded-lg pl-12 text-base">
+                    <span>Rental History</span>
                   </Link>
                 </li>
-                <Separator className="my-2" />
+                <Separator className="my-3" />
                 <li>
                   <button 
                     onClick={handleLogout}
                     disabled={logoutMutation.isPending}
-                    className="flex items-center py-2 px-4 w-full text-left text-red-600 hover:bg-gray-100 rounded-lg"
+                    className="flex items-center py-3 px-4 w-full text-left text-red-600 hover:bg-gray-100 rounded-lg text-base"
                   >
-                    <LogOut className="h-4 w-4 mr-2" />
+                    <LogOut className="h-5 w-5 mr-3" />
                     <span>{logoutMutation.isPending ? "Logging out..." : "Log out"}</span>
                   </button>
                 </li>
