@@ -18,10 +18,8 @@ const FeatureCard = ({ icon, title, description, link, linkText }: FeatureCardPr
         <h3 className="text-xl font-bold font-roboto">{title}</h3>
       </div>
       <p className="text-gray-600 mb-4">{description}</p>
-      <Link href={link}>
-        <a className="text-primary font-medium flex items-center hover:underline">
-          {linkText} <ArrowRight className="ml-1 h-4 w-4" />
-        </a>
+      <Link href={link} className="text-primary font-medium flex items-center hover:underline">
+        {linkText} <ArrowRight className="ml-1 h-4 w-4" />
       </Link>
     </div>
   );

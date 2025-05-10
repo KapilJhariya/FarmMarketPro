@@ -39,13 +39,13 @@ const Header = () => {
         <div className="container mx-auto px-4 py-2 md:py-3">
           <div className="flex justify-between items-center">
             {/* Logo - Touch-friendly with larger tap target */}
-            <Link href="/" className="flex items-center py-2 pr-4">
-              <Recycle className="h-6 w-6 md:h-7 md:w-7 mr-2" />
-              <h1 className="text-xl md:text-2xl font-bold">AgriManage</h1>
+            <Link href="/" className="flex items-center py-2 pr-2 md:pr-4 flex-shrink-0">
+              <Recycle className="h-6 w-6 mr-2" />
+              <h1 className="text-lg md:text-xl lg:text-2xl font-bold truncate">AgriManage</h1>
             </Link>
             
             {/* Desktop Navigation - Hidden on mobile */}
-            <nav className="hidden md:flex items-center space-x-1 lg:space-x-5">
+            <nav className="hidden md:flex items-center space-x-1 lg:space-x-5 flex-grow justify-center mx-4">
               <Link href="/" className={`py-2 px-3 font-medium hover:bg-primary-dark rounded-md transition-colors ${location === '/' ? 'bg-primary-dark' : ''}`}>
                 Home
               </Link>
@@ -66,16 +66,16 @@ const Header = () => {
             </nav>
             
             {/* Right-side Action Icons - Optimized for touch */}
-            <div className="flex items-center">
-              {/* Cart Button */}
+            <div className="flex items-center space-x-1 md:space-x-2 flex-shrink-0">
+              {/* Cart Button - Visible on all screen sizes */}
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="relative h-10 w-10" 
+                className="relative h-10 w-10 flex-shrink-0" 
                 onClick={openCart}
                 aria-label="Shopping cart"
               >
-                <ShoppingCart className="h-6 w-6 text-white" />
+                <ShoppingCart className="h-5 w-5 md:h-6 md:w-6 text-white" />
                 {cart.items.length > 0 && (
                   <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {cart.items.length}
@@ -83,14 +83,14 @@ const Header = () => {
                 )}
               </Button>
               
-              {/* User Menu - Desktop only */}
+              {/* User Menu - Always Visible */}
               {user ? (
-                <div className="hidden md:block ml-2">
+                <div className="relative flex-shrink-0">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-10 w-10 rounded-full">
+                      <Button variant="ghost" className="h-10 w-10 rounded-full p-0">
                         <Avatar className="h-8 w-8 border-2 border-white">
-                          <AvatarFallback className="bg-secondary text-white">
+                          <AvatarFallback className="bg-secondary text-white text-xs md:text-sm">
                             {getUserInitials()}
                           </AvatarFallback>
                         </Avatar>
@@ -104,7 +104,10 @@ const Header = () => {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem 
                         className="cursor-pointer"
-                        onClick={() => navigate("/order-history")}
+                        onClick={() => {
+                          navigate("/order-history");
+                          setIsMobileMenuOpen(false);
+                        }}
                       >
                         <User className="mr-2 h-4 w-4" />
                         <span>My Account</span>
@@ -124,27 +127,25 @@ const Header = () => {
                   </DropdownMenu>
                 </div>
               ) : (
-                <div className="hidden md:block ml-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="bg-white text-primary hover:bg-gray-100 h-10"
-                    onClick={() => navigate("/auth")}
-                  >
-                    Sign In
-                  </Button>
-                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-white text-primary hover:bg-gray-100 h-9 px-2 md:px-3 flex-shrink-0 text-xs md:text-sm"
+                  onClick={() => navigate("/auth")}
+                >
+                  Sign In
+                </Button>
               )}
               
               {/* Mobile Menu Button */}
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="md:hidden ml-1 h-10 w-10"
+                className="md:hidden h-10 w-9 flex-shrink-0"
                 onClick={() => setIsMobileMenuOpen(true)}
                 aria-label="Open menu"
               >
-                <Menu className="h-6 w-6 text-white" />
+                <Menu className="h-5 w-5 text-white" />
               </Button>
             </div>
           </div>
